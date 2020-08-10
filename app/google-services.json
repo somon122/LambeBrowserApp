@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "45088542806",
+    "firebase_url": "https://lambebrowser.firebaseio.com",
+    "project_id": "lambebrowser",
+    "storage_bucket": "lambebrowser.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45088542806:android:f8af80c964b7c937d6abf7",
+        "android_client_info": {
+          "package_name": "com.world_tech_point.lambebrowser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "45088542806-fdc43f25c2jpvv6uhit33mcpb9430qef.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvnCBHNM6_0fXHnEfwsWh1Ep7zzsnrErs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "45088542806-fdc43f25c2jpvv6uhit33mcpb9430qef.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

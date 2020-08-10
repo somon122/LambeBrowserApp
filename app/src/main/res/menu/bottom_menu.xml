@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <item
+        android:icon="@drawable/home"
+        android:id="@+id/bottomHome_id"
+        android:orderInCategory="100"
+        android:title="Home"
+        app:showAsAction="always" />
+
+    <item
+        android:icon="@drawable/download"
+        android:id="@+id/bottomDownload_id"
+        android:orderInCategory="100"
+        android:title="Download"
+        app:showAsAction="always" />
+
+
+
+    <item
+        android:id="@+id/bottom_Me_id"
+        android:icon="@drawable/person"
+        android:title="Me"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/bottom_File_id"
+        android:icon="@drawable/file"
+        android:orderInCategory="100"
+        android:title="File"
+        app:showAsAction="always" />
+</menu>
