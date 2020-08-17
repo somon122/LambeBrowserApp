@@ -1,9 +1,11 @@
 package com.world_tech_point.lambebrowser.serviceFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -67,16 +69,7 @@ public class HomeFragment extends Fragment {
         deleteHistoryData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-               boolean delete =  db_manager.removeAll();
-               if (delete){
-                   Toast.makeText(getContext(), "deleted", Toast.LENGTH_SHORT).show();
-                   HomeFragment homeFragment = new HomeFragment();
-                   fragmentSet(homeFragment);
-               }else {
-                   Toast.makeText(getContext(), "field", Toast.LENGTH_SHORT).show();
-               }
-
+             deleteVisited();
             }
         });
         searchUrl.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +141,38 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    private void deleteVisited() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Logout alert");
+        builder.setMessage("Are you sure?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                boolean delete =  db_manager.removeAll();
+                if (delete){
+                    Toast.makeText(getContext(), "deleted", Toast.LENGTH_SHORT).show();
+                    HomeFragment homeFragment = new HomeFragment();
+                    fragmentSet(homeFragment);
+                }else {
+                    Toast.makeText(getContext(), "field", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void fragmentSet(Fragment fragment){
 
         FragmentManager manager = getActivity().getSupportFragmentManager();
@@ -187,13 +212,25 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VisitedAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull VisitedAdapter.ViewHolder holder, final int position) {
 
          linkClass = linkClassList.get(position);
 
          holder.titleTV.setText(linkClass.getTitle());
          holder.urlTV.setText(linkClass.getLink());
         Picasso.get().load(linkClass.getLogo()).placeholder(R.drawable.world).into(holder.vLogo);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                linkClass = linkClassList.get(position);
+                String lastUrl = linkClass.getLink();
+                Intent intent = new Intent(context, WebViewActivity.class);
+                intent.putExtra("url",lastUrl);
+                context.startActivity(intent);
+
+            }
+        });
 
     }
 

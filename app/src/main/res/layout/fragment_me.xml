@@ -168,7 +168,7 @@
                         android:weightSum="4">
 
                         <LinearLayout
-                            android:id="@+id/g_mail_id"
+                            android:id="@+id/meHistory_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -183,14 +183,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Histroy"
+                                android:text="History"
                                 android:textColor="@color/black"
                                 android:textSize="10sp" />
 
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/youTube_id"
+                            android:id="@+id/meMp3Song_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -212,7 +212,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/facebook_id"
+                            android:id="@+id/meVideo_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -220,7 +220,7 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="30dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="30dp"
                                 android:src="@drawable/video_song" />
 
@@ -234,6 +234,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/meSetting_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -291,6 +292,7 @@
 
 
                         <LinearLayout
+                            android:id="@+id/meFile_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -310,7 +312,9 @@
                                 android:textSize="10sp" />
 
                         </LinearLayout>
+
                         <LinearLayout
+                            android:id="@+id/meWallet_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -325,12 +329,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Google"
+                                android:text="Wallet"
                                 android:textColor="@color/black"
                                 android:textSize="10sp" />
 
                         </LinearLayout>
                         <LinearLayout
+                            android:id="@+id/meExits_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -386,6 +391,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/meFacebook_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -437,6 +443,7 @@
 
 
                     <LinearLayout
+                        android:id="@+id/meShare_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
@@ -489,6 +496,7 @@
 
 
                     <LinearLayout
+                        android:id="@+id/meHelp_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"

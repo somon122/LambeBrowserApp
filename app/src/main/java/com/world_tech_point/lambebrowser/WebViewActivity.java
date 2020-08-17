@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +50,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -57,7 +59,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.world_tech_point.lambebrowser.Database.DB_Manager;
 import com.world_tech_point.lambebrowser.Database.LinkClass;
+import com.world_tech_point.lambebrowser.serviceFragment.DownloadFragment;
+import com.world_tech_point.lambebrowser.serviceFragment.FilesFragment;
 import com.world_tech_point.lambebrowser.serviceFragment.HomeFragment;
+import com.world_tech_point.lambebrowser.serviceFragment.MeFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -69,7 +74,7 @@ import at.huber.youtubeExtractor.YouTubeUriExtractor;
 import at.huber.youtubeExtractor.YtFile;
 
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewActivity extends AppCompatActivity{
 
 
     private static final int INPUT_FILE_REQUEST_CODE = 1;
@@ -188,17 +193,22 @@ public class WebViewActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     ProgressBar progressBar;
     String appname;
+
+    LinearLayout backButton, forwardButton,homeButton,copyButton,shareButton, webBottomNavigationView;
     EditText webViewUrlEditText;
     LinearLayout webViewSearchUrl;
     FloatingActionButton favDownload;
+
     ProgressDialog pDialog;
     ImageView imageIcon;
     String  mURl;
     String  mID;
     String target_url;
     String youTubeLink;
-
     int bCount;
+
+    String shareUrl;
+    String shareTitle;
 
     DB_Manager db_manager;
     LinkClass linkClass;
@@ -208,6 +218,14 @@ public class WebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
+
+
+        backButton = findViewById(R.id.wBackButton_id);
+        forwardButton = findViewById(R.id.wForwardButton_id);
+        homeButton = findViewById(R.id.wHomeButton_id);
+        copyButton = findViewById(R.id.wCopyUrl_id);
+        shareButton = findViewById(R.id.wShareUrlButton_id);
+        webBottomNavigationView = findViewById(R.id.webBottomNavigationView);
 
         progressBar = findViewById(R.id.progressBar_id);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -236,6 +254,8 @@ public class WebViewActivity extends AppCompatActivity {
             }
         });
 
+
+
         verifyStoragePermissions(this);
         webViewSearchUrl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +278,8 @@ public class WebViewActivity extends AppCompatActivity {
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.addJavascriptInterface(this, "FBDownloader");
+        webView.setClickable(true);
+
 
         webView.setDownloadListener(new DownloadListener() {
             @Override
@@ -282,13 +304,77 @@ public class WebViewActivity extends AppCompatActivity {
             }
         });
 
-        webView.setOnLongClickListener(new View.OnLongClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onClick(View view) {
 
-                return false;
+                if (webView.canGoBack()){
+                    webView.goBack();
+                }else {
+                    if (bCount>1){
+                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                        startActivity(intent);
+                    }else {
+                        bCount= bCount+1;
+                    }
+
+                }
+
             }
         });
+        forwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (webView.canGoForward()){
+                    webView.goForward();
+                }
+
+
+            }
+        });
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intent);
+
+            }
+        });
+        copyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (shareUrl!= null){
+
+                ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Link", shareUrl);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(WebViewActivity.this, "Copied!", Toast.LENGTH_SHORT).show();
+
+                }else {
+
+                    Toast.makeText(WebViewActivity.this, "Text Empty", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            String shareBody = "Site link: "+shareUrl;
+            String shareSub = "Important Link";
+            intent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
+            intent.putExtra(Intent.EXTRA_TEXT,shareBody);
+            startActivity(Intent.createChooser(intent,shareTitle));
+
+            }
+        });
+
 
         webView.setWebViewClient(new WebViewClient() {
 
@@ -298,6 +384,9 @@ public class WebViewActivity extends AppCompatActivity {
 
                 webViewUrlEditText.setText(url);
                 imageIcon.setImageBitmap(favicon);
+
+                 shareUrl = url;
+                 shareTitle = view.getTitle();
 
                 if (haveNetwork()){
                     String logo = String.valueOf(favicon);
@@ -309,6 +398,8 @@ public class WebViewActivity extends AppCompatActivity {
                         Toast.makeText(WebViewActivity.this, "insert field", Toast.LENGTH_SHORT).show();
                     }
                     if (url.contains("youtube")){
+
+                        webBottomNavigationView.setVisibility(View.GONE);
 
                         try {
                             YouTubeUriExtractor uriExtractor = new YouTubeUriExtractor(WebViewActivity.this) {
@@ -461,12 +552,19 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (bCount>1){
-           Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-           startActivity(intent);
+
+        if (webView.canGoBack()){
+            webView.goBack();
 
         }else {
-            bCount= bCount+1;
+            if (bCount>1){
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intent);
+
+            }else {
+                bCount= bCount+1;
+            }
+
         }
 
     }
