@@ -11,8 +11,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
-import com.world_tech_point.lambebrowser.MainActivity;
 import com.world_tech_point.lambebrowser.R;
-import com.world_tech_point.lambebrowser.WebViewActivity;
+import com.world_tech_point.lambebrowser.VideoPlayActivity;
+import com.world_tech_point.lambebrowser.mp3Folder.MP3_PlayActivity;
+import com.world_tech_point.lambebrowser.videoShowFolder.FileShowActivity;
+import com.world_tech_point.lambebrowser.wallet.WalletActivity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,11 +44,18 @@ public class MeFragment extends Fragment {
     LinearLayout history, exits, wallet, setting,file,videoList, mp3List, fb,share,help;
     de.hdodenhof.circleimageview.CircleImageView userProfile;
     private static final int RC_SIGN_IN = 100;
+    private static final int FILE_PICKER_CODE = 101;
+
+    AlertDialog.Builder builder;
+    AlertDialog dialog;
+    String value =  null;
+    RadioButton Membership;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_me, container, false);
+
         userSignInStatus = root.findViewById(R.id.showUserStatus_id);
         userName = root.findViewById(R.id.showUserName_id);
         userProfile = root.findViewById(R.id.userProfile_id);
@@ -105,13 +116,18 @@ public class MeFragment extends Fragment {
         wallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "wallet", Toast.LENGTH_SHORT).show();
+
+               startActivity(new Intent(getContext(), WalletActivity.class));
             }
         });
         file.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "file", Toast.LENGTH_SHORT).show();
+                //startActivity(new Intent(getContext(), FileShowActivity.class));
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                startActivityForResult(intent,FILE_PICKER_CODE);
+
             }
         });
         setting.setOnClickListener(new View.OnClickListener() {
@@ -123,13 +139,13 @@ public class MeFragment extends Fragment {
         mp3List.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "mp3List", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), MP3_PlayActivity.class));
             }
         });
         videoList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "video file", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), FileShowActivity.class));
 
             }
         });
@@ -160,9 +176,47 @@ public class MeFragment extends Fragment {
             }
         });
 
-
         return root;
     }
+
+    private void choosePlaneAlert() {
+
+        builder = new AlertDialog.Builder(getContext());
+        final View view1 = getLayoutInflater().inflate(R.layout.select_membership,null);
+        builder.setView(view1);
+        final RadioGroup radioGroup = view1.findViewById(R.id.selectRadioGroup);
+        final RadioButton freeMembership = view1.findViewById(R.id.selectFreeMembership);
+        final RadioButton proMembership = view1.findViewById(R.id.selectProMembership);
+        Button button = view1.findViewById(R.id.selectMembershipNext);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Membership = view1.findViewById(checkedId);
+                value =Membership.getText().toString();
+            }
+        });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (value !=null){
+                    Intent intent = new Intent(getContext(),ChooseMemberActivity.class);
+                    intent.putExtra("userStatus",value);
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(getContext(), "Please Choose Option", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        dialog = builder.create();
+        dialog.show();
+    }
+
+
+
 
     private void exitsUser() {
 
@@ -253,6 +307,8 @@ public class MeFragment extends Fragment {
                 userSignInStatus.setText("Signed in with Number");
             }
 
+            choosePlaneAlert();
+
 
         }
     }
@@ -271,11 +327,22 @@ public class MeFragment extends Fragment {
                 userSignInStatus.setText(user.getDisplayName()+"\nSigned in");
                 Picasso.get().load(user.getPhotoUrl()).into(userProfile);
 
+
             } else {
 
                 Toast.makeText(getContext(), "Please try again", Toast.LENGTH_SHORT).show();
 
             }
+        }else if (requestCode == FILE_PICKER_CODE){
+
+            if (resultCode ==RESULT_OK){
+                Toast.makeText(getContext(), ""+data.getData(), Toast.LENGTH_SHORT).show();
+               Intent intent = new Intent(getContext(), VideoPlayActivity.class);
+                intent.putExtra("video_url",data.getData());
+                startActivity(intent);
+            }
+
         }
     }
+
 }

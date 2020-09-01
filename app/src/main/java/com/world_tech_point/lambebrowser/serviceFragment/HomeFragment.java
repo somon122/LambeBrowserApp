@@ -6,24 +6,32 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.world_tech_point.lambebrowser.categoryControl.AddCategoryActivity;
 import com.world_tech_point.lambebrowser.Database.DB_Manager;
 import com.world_tech_point.lambebrowser.Database.LinkClass;
 import com.world_tech_point.lambebrowser.R;
 import com.world_tech_point.lambebrowser.WebViewActivity;
+import com.world_tech_point.lambebrowser.addSpeedDaile.SpeedDialAdapter;
+import com.world_tech_point.lambebrowser.addSpeedDaile.SpeedDialClass;
+import com.world_tech_point.lambebrowser.addSpeedDaile.Speed_DB;
+import com.world_tech_point.lambebrowser.categoryControl.CategoryController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,21 +40,32 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
 
-    LinearLayout google,facebook,youTube,g_mail,searchUrl;
+    LinearLayout google,facebook,youTube,g_mail,searchUrl, addSpeedDial, visitedLinearLayout;
     EditText urlEditText;
 
     RecyclerView recyclerView;
     List<LinkClass>visitedClassList;
     DB_Manager db_manager;
     ImageView deleteHistoryData;
+    ConstraintLayout constraintLayoutScroll;
+    TextView pupUpButton;
+    FrameLayout categoryHost;
+    int cHide;
+
+    RecyclerView speedDialRecyclerView;
+    List<SpeedDialClass>dialClassList;
+    Speed_DB speed_db;
+
+    CategoryController categoryController;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root =  inflater.inflate(R.layout.fragment_home, container, false);
+        final View root =  inflater.inflate(R.layout.fragment_home, container, false);
 
 
+        categoryController = new CategoryController(getContext());
         google = root.findViewById(R.id.google_id);
         facebook = root.findViewById(R.id.facebook_id);
         youTube = root.findViewById(R.id.youTube_id);
@@ -54,6 +73,24 @@ public class HomeFragment extends Fragment {
         searchUrl = root.findViewById(R.id.searchUrl_id);
         urlEditText = root.findViewById(R.id.urlEditText_id);
         deleteHistoryData = root.findViewById(R.id.deleteHistoryData_id);
+        visitedLinearLayout = root.findViewById(R.id.visitedLinearLayout);
+
+        speedDialRecyclerView = root.findViewById(R.id.speedDialRecyclerView);
+        speedDialRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),5));
+        speedDialRecyclerView.setHasFixedSize(true);
+        dialClassList = new ArrayList<>();
+
+        speed_db = new Speed_DB(getContext());
+        dialClassList=speed_db.getLinkClassList();
+
+        SpeedDialAdapter speedDialAdapter = new SpeedDialAdapter(getContext(),dialClassList);
+        speedDialRecyclerView.setAdapter(speedDialAdapter);
+        speedDialAdapter.notifyDataSetChanged();
+
+
+        addSpeedDial = root.findViewById(R.id.addSpeedDial);
+        //pupUpButton = root.findViewById(R.id.pupUpButton);
+
 
         recyclerView = root.findViewById(R.id.mostVisitedRecyclerView_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -66,10 +103,35 @@ public class HomeFragment extends Fragment {
         visitedAdapter.notifyDataSetChanged();
 
 
+     /*   pupUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.category_popup_model, (LinearLayout) root.findViewById(R.id.categoryPopUp_id));
+
+
+                bottomSheetDialog.setContentView(bottomSheetView);
+                bottomSheetDialog.show();
+
+
+            }
+        });*/
         deleteHistoryData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
              deleteVisited();
+            }
+        });
+
+        addSpeedDial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                categoryController.delete();
+                categoryController.setStoreStatus("Add Speed Dial");
+             startActivity(new Intent(getContext(), AddCategoryActivity.class));
+
+
             }
         });
         searchUrl.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +149,12 @@ public class HomeFragment extends Fragment {
                         String lastUrl = "https://"+url;
                         Intent intent = new Intent(getActivity(), WebViewActivity.class);
                         intent.putExtra("url",lastUrl);
+                        startActivity(intent);
+
+                    }else if (url.contains("https")){
+
+                        Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                        intent.putExtra("url",url);
                         startActivity(intent);
 
                     }else {
@@ -144,7 +212,7 @@ public class HomeFragment extends Fragment {
     private void deleteVisited() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Logout alert");
+        builder.setTitle("Alert");
         builder.setMessage("Are you sure?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -156,7 +224,7 @@ public class HomeFragment extends Fragment {
                     HomeFragment homeFragment = new HomeFragment();
                     fragmentSet(homeFragment);
                 }else {
-                    Toast.makeText(getContext(), "field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Already Clear", Toast.LENGTH_SHORT).show();
                 }
 
 

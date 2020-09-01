@@ -5,28 +5,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.world_tech_point.lambebrowser.categoryControl.AddCategoryActivity;
+import com.world_tech_point.lambebrowser.categoryControl.CategoryController;
 import com.world_tech_point.lambebrowser.serviceFragment.DownloadFragment;
-import com.world_tech_point.lambebrowser.serviceFragment.FilesFragment;
 import com.world_tech_point.lambebrowser.serviceFragment.HomeFragment;
 import com.world_tech_point.lambebrowser.serviceFragment.MeFragment;
 
 import java.io.File;
-import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     int exitCount;
+    ImageView pupUpButton;
+    int cHide;
+
+    CategoryController categoryController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,40 @@ public class MainActivity extends AppCompatActivity {
         fragmentSet(homeFragment);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        pupUpButton = findViewById(R.id.pupUpButton);
+
+        categoryController = new CategoryController(this);
+
+        pupUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (cHide>0){
+                    cHide=0;
+                    HomeFragment homeFragment = new HomeFragment();
+                    fragmentSet(homeFragment);
+                }else {
+                    cHide=cHide+1;
+                    categoryController.delete();
+                    categoryController.setStoreStatus("Blog");
+                    startActivity(new Intent(MainActivity.this, AddCategoryActivity.class));
+
+                }
+
+              /*  BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainActivity.this,
+                        R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(MainActivity.this).inflate(R.layout.category_popup_model,
+                        (LinearLayout)findViewById(R.id.categoryPopUp_id));
+
+
+                bottomSheetDialog.setContentView(bottomSheetView);
+                bottomSheetDialog.show();*/
+
+
+            }
+        });
+
+
         bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
             @Override
             public void onNavigationItemReselected(@NonNull MenuItem item) {
@@ -49,13 +85,21 @@ public class MainActivity extends AppCompatActivity {
                         DownloadFragment downloadFragment = new DownloadFragment();
                         fragmentSet(downloadFragment);
                         break;
+                    case R.id.bottomBlog_id:
+
+                        categoryController.delete();
+                        categoryController.setStoreStatus("Blog");
+                        startActivity(new Intent(MainActivity.this, AddCategoryActivity.class));
+                        break;
                     case R.id.bottom_Me_id:
                         MeFragment meFragment = new MeFragment();
                         fragmentSet(meFragment);
                         break;
                     case R.id.bottom_File_id:
-                        FilesFragment filesFragment = new FilesFragment();
-                        fragmentSet(filesFragment);
+                        startActivity(new Intent(MainActivity.this, ReadBlogActivity.class));
+
+                       /* FilesFragment filesFragment = new FilesFragment();
+                        fragmentSet(filesFragment);*/
                         break;
                     default:
                         break;

@@ -34,10 +34,10 @@ public class DB_helper extends SQLiteOpenHelper {
 
         try {
             db.execSQL(Create_Table);
-            Toast.makeText(context, "onCreate is called", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "onCreate is called", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
-            Toast.makeText(context, "Exception", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Exception", Toast.LENGTH_SHORT).show();
         }
 
 

@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.world_tech_point.lambebrowser">
 
-
-    <uses-permission android:name="android.permission.CLEAR_APP_CACHE"
+    <uses-permission
+        android:name="android.permission.CLEAR_APP_CACHE"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -22,7 +22,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".VideoPlayActivity"></activity>
+        <activity android:name=".mp3Folder.MP3_PlayActivity"></activity>
+        <activity android:name=".videoShowFolder.FileShowActivity" />
+        <activity android:name=".wallet.WalletActivity" />
+        <activity android:name=".YoutubeVideoPlayerActivity" />
+        <activity android:name=".categoryControl.AddCategoryActivity" />
+        <activity android:name=".ReadBlogActivity" />
+        <activity android:name=".serviceFragment.ChooseMemberActivity" />
+        <activity android:name=".VideoPlayActivity" />
         <activity android:name=".openSplash.OpenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +40,9 @@
         <activity
             android:name=".WebViewActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

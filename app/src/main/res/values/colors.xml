@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#037FFB</color>
+    <color name="colorPrimaryDark">#037FFB</color>
+    <color name="colorAccent">#037FFB</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="red">#FD0303</color>
     <color name="green">#04934D</color>
+    <color name="PaleTurquoise">#AFEEEE</color>
+    <color name="Turquoise">#40E0D0</color>
 </resources>

@@ -19,6 +19,14 @@
         app:showAsAction="always" />
 
 
+  <item
+        android:icon="@drawable/blog"
+        android:id="@+id/bottomBlog_id"
+        android:orderInCategory="100"
+        android:title="Blog"
+        app:showAsAction="always" />
+
+
 
     <item
         android:id="@+id/bottom_Me_id"

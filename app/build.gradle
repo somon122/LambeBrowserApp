@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -41,6 +42,13 @@ dependencies {
 
     implementation 'com.github.Ashusolanki:FacebookUrlExtractor:0.0.5'
     implementation 'com.github.HaarigerHarald:android-youtubeExtractor:master-SNAPSHOT'
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation files('libs\\YouTubeAndroidPlayerApi.jar')
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.codesgood:justifiedtextview:1.1.0'
 
-
+}
+repositories {
+    mavenCentral()
 }

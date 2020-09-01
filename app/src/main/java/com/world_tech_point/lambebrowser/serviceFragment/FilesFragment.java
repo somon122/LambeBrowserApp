@@ -21,8 +21,6 @@ public class FilesFragment extends Fragment {
         View root =  inflater.inflate(R.layout.fragment_files, container, false);
 
 
-
-
         return  root;
 
     }
