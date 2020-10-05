@@ -3,6 +3,7 @@ package com.world_tech_point.lambebrowser.openSplash;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;

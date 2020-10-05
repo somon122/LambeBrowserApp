@@ -49,9 +49,13 @@ public class AddSpeedDialAdapter extends RecyclerView.Adapter<AddSpeedDialAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 speedDialClass = speedDialClassList.get(position);
-                confirmAlert(speedDialClass.getSiteURL(), speedDialClass.getName(), speedDialClass.getImageURL());
+                String check = speed_db.getData(speedDialClass.getSiteURL());
+                if (check == null){
+                    confirmAlert(speedDialClass.getSiteURL(), speedDialClass.getName(), speedDialClass.getImageURL());
+                }else {
+                    alreadyAlert();
+                }
 
             }
         });
@@ -76,6 +80,8 @@ public class AddSpeedDialAdapter extends RecyclerView.Adapter<AddSpeedDialAdapte
                             Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                             context.startActivity(new Intent(context, MainActivity.class));
                         }
+
+
                     }
                 }).setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
@@ -88,6 +94,34 @@ public class AddSpeedDialAdapter extends RecyclerView.Adapter<AddSpeedDialAdapte
         dialog.show();
 
 
+    }
+ private void alreadyAlert() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Confirm Alert!")
+                .setMessage("Already Added this Item")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override

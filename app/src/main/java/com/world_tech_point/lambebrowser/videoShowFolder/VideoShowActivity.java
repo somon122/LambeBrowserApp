@@ -1,9 +1,9 @@
 package com.world_tech_point.lambebrowser.videoShowFolder;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
@@ -11,17 +11,24 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.widget.SeekBar;
+import android.view.MenuItem;
 
 import com.world_tech_point.lambebrowser.R;
-import com.world_tech_point.lambebrowser.mp3Folder.MP3_PlayActivity;
-import com.world_tech_point.lambebrowser.mp3Folder.SongAdapter;
-import com.world_tech_point.lambebrowser.mp3Folder.SongInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileShowActivity extends AppCompatActivity {
+public class VideoShowActivity extends AppCompatActivity {
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private List<VideoClass> _videos;
     RecyclerView recyclerView;
@@ -33,8 +40,14 @@ public class FileShowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_show);
 
-        _videos = new ArrayList<>();
+        Toolbar toolbar = findViewById(R.id.videoListToolBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Video list");
 
+
+        _videos = new ArrayList<>();
         recyclerView = findViewById(R.id.VideoRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         recyclerView.setHasFixedSize(true);
@@ -60,7 +73,7 @@ public class FileShowActivity extends AppCompatActivity {
             }
 
             cursor.close();
-            videoAdapter = new VideoAdapter(FileShowActivity.this,_videos);
+            videoAdapter = new VideoAdapter(VideoShowActivity.this,_videos);
             recyclerView.setAdapter(videoAdapter);
 
         }

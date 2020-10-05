@@ -121,9 +121,9 @@
     <LinearLayout
         android:id="@+id/webBottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:weightSum="5"
+        android:weightSum="6"
         android:background="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -136,10 +136,9 @@
             android:layout_weight="1"
            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp">
 
             <TextView
-
                 android:background="@drawable/arrow_back"
                 android:layout_width="25dp"
                 android:layout_height="25dp"/>
@@ -153,7 +152,7 @@
             android:layout_weight="1"
            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp">
 
             <TextView
 
@@ -169,11 +168,27 @@
             android:layout_weight="1"
            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp">
 
             <TextView
 
                 android:background="@drawable/home"
+                android:layout_width="25dp"
+                android:layout_height="25dp"/>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wPopUpMenu_id"
+        android:layout_width="0dp"
+            android:layout_weight="1"
+           android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="50dp">
+
+            <TextView
+
+                android:background="@drawable/menu"
                 android:layout_width="25dp"
                 android:layout_height="25dp"/>
 
@@ -186,7 +201,7 @@
             android:layout_weight="1"
            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp">
 
             <TextView
 
@@ -204,7 +219,7 @@
             android:layout_weight="1"
            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp">
 
             <TextView
 

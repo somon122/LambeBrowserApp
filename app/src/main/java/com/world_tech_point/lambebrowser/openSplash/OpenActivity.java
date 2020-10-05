@@ -1,6 +1,7 @@
 package com.world_tech_point.lambebrowser.openSplash;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 

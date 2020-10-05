@@ -22,13 +22,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mp3Folder.MP3_PlayActivity"></activity>
-        <activity android:name=".videoShowFolder.FileShowActivity" />
+        <activity android:name=".HistoryActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".serviceFragment.DownloadActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".mp3Folder.MP3_PlayActivity" />
+        <activity android:name=".videoShowFolder.VideoShowActivity" />
         <activity android:name=".wallet.WalletActivity" />
         <activity android:name=".YoutubeVideoPlayerActivity" />
         <activity android:name=".categoryControl.AddCategoryActivity" />
         <activity android:name=".ReadBlogActivity" />
-        <activity android:name=".serviceFragment.ChooseMemberActivity" />
+        <activity android:name=".serviceFragment.SubmitMemberInfoActivity" />
         <activity android:name=".VideoPlayActivity" />
         <activity android:name=".openSplash.OpenActivity">
             <intent-filter>

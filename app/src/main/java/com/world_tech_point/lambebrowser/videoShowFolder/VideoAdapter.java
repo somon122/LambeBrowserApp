@@ -2,6 +2,9 @@ package com.world_tech_point.lambebrowser.videoShowFolder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.world_tech_point.lambebrowser.R;
 import com.world_tech_point.lambebrowser.VideoPlayActivity;
@@ -41,9 +45,18 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.SongHolder> 
     public void onBindViewHolder(final VideoAdapter.SongHolder songHolder, final int i) {
         final VideoClass s = _songs.get(i);
         songHolder.name.setText(_songs.get(i).getSongname());
-        Picasso.get().load(s.getSongUrl()).placeholder(R.drawable.music).fit().into(songHolder.imageView);
 
-        songHolder.btnAction.setOnClickListener(new View.OnClickListener() {
+       /* Bitmap thumb;
+        thumb = ThumbnailUtils.createVideoThumbnail(s.getSongUrl(), MediaStore.Video.Thumbnails.MINI_KIND);
+        songHolder.imageView.setImageBitmap(thumb);*/
+
+        Glide.with(context)
+                .asBitmap()
+                .centerCrop()
+                .load(s.getSongUrl()) // or URI/path
+                .into(songHolder.imageView); //imageview to set thumbnail to
+
+        songHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -62,13 +75,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.SongHolder> 
     }
 
     public class SongHolder extends RecyclerView.ViewHolder {
-        ImageView imageView,btnAction;
+        ImageView imageView;
         TextView name;
         public SongHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.videoName);
             imageView = itemView.findViewById(R.id.videoImage);
-            btnAction = itemView.findViewById(R.id.videoPlayBtn);
+
         }
     }
 }

@@ -22,7 +22,7 @@ public class CategoryController {
     }
 
     public String getStoreStatus(){
-        String status = sharedPreferences.getString("status",null);
+        String status = sharedPreferences.getString("status","Blog");
         return status;
     }
 

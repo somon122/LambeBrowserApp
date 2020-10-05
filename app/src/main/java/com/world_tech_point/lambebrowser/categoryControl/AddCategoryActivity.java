@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
+import com.world_tech_point.lambebrowser.MainActivity;
 import com.world_tech_point.lambebrowser.R;
 
 public class AddCategoryActivity extends AppCompatActivity {
@@ -16,11 +18,25 @@ public class AddCategoryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == android.R.id.home) {
-            this.finish();
+            categoryController.delete();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        categoryController.delete();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
+        categoryController.delete();
+    }
 
     PageViewerAdapter pageViewerAdapter;
     ViewPager viewPager;
@@ -81,9 +97,6 @@ public class AddCategoryActivity extends AppCompatActivity {
 
             }
         });
-
-
-
 
     }
 }

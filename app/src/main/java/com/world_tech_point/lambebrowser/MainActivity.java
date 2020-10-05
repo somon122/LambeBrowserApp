@@ -2,6 +2,7 @@ package com.world_tech_point.lambebrowser;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -15,7 +16,9 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.world_tech_point.lambebrowser.categoryControl.AddCategoryActivity;
 import com.world_tech_point.lambebrowser.categoryControl.CategoryController;
+import com.world_tech_point.lambebrowser.serviceFragment.DownloadActivity;
 import com.world_tech_point.lambebrowser.serviceFragment.DownloadFragment;
+import com.world_tech_point.lambebrowser.serviceFragment.FilesFragment;
 import com.world_tech_point.lambebrowser.serviceFragment.HomeFragment;
 import com.world_tech_point.lambebrowser.serviceFragment.MeFragment;
 
@@ -82,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentSet(homeFragment);
                         break;
                     case R.id.bottomDownload_id:
-                        DownloadFragment downloadFragment = new DownloadFragment();
-                        fragmentSet(downloadFragment);
+                      startActivity(new Intent(getApplicationContext(), DownloadActivity.class));
                         break;
                     case R.id.bottomBlog_id:
 
@@ -96,9 +98,10 @@ public class MainActivity extends AppCompatActivity {
                         fragmentSet(meFragment);
                         break;
                     case R.id.bottom_File_id:
-                        startActivity(new Intent(MainActivity.this, ReadBlogActivity.class));
 
-                       /* FilesFragment filesFragment = new FilesFragment();
+                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+                     /*  FilesFragment filesFragment = new FilesFragment();
                         fragmentSet(filesFragment);*/
                         break;
                     default:
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void fragmentSet(Fragment fragment){
+    private  void fragmentSet(Fragment fragment){
 
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.hostFragment,fragment)
@@ -119,8 +122,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
 
-        if (exitCount >1){
+      /*  if (exitCount >1){
             //finishAffinity();
             deleteCache(MainActivity.this);
 
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             exitCount = exitCount+1;
             HomeFragment homeFragment = new HomeFragment();
             fragmentSet(homeFragment);
-        }
+        }*/
 
     }
 

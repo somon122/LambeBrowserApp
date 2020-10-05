@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-public class WalletAdapter extends FragmentPagerAdapter {
+public class WalletPagerAdapter extends FragmentPagerAdapter {
 
     private int position;
 
-    public WalletAdapter(@NonNull FragmentManager fm, int position) {
+    public WalletPagerAdapter(@NonNull FragmentManager fm, int position) {
         super(fm, position);
         this.position = position;
     }

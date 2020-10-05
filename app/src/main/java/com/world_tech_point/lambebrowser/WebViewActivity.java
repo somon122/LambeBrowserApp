@@ -5,8 +5,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
@@ -21,7 +19,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -32,6 +29,9 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -45,24 +45,23 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.world_tech_point.lambebrowser.Database.DB_Manager;
 import com.world_tech_point.lambebrowser.Database.LinkClass;
-import com.world_tech_point.lambebrowser.serviceFragment.DownloadFragment;
-import com.world_tech_point.lambebrowser.serviceFragment.FilesFragment;
-import com.world_tech_point.lambebrowser.serviceFragment.HomeFragment;
-import com.world_tech_point.lambebrowser.serviceFragment.MeFragment;
+import com.world_tech_point.lambebrowser.mp3Folder.MP3_PlayActivity;
+import com.world_tech_point.lambebrowser.videoShowFolder.VideoShowActivity;
+import com.world_tech_point.lambebrowser.wallet.WalletActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -73,8 +72,12 @@ import java.util.Date;
 import at.huber.youtubeExtractor.YouTubeUriExtractor;
 import at.huber.youtubeExtractor.YtFile;
 
+import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
+import static android.webkit.WebView.HitTestResult.SRC_ANCHOR_TYPE;
+import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
-public class WebViewActivity extends AppCompatActivity{
+
+public class WebViewActivity extends AppCompatActivity {
 
 
     private static final int INPUT_FILE_REQUEST_CODE = 1;
@@ -194,15 +197,21 @@ public class WebViewActivity extends AppCompatActivity{
     ProgressBar progressBar;
     String appname;
 
-    LinearLayout backButton, forwardButton,homeButton,copyButton,shareButton, webBottomNavigationView;
+    LinearLayout backButton, forwardButton, homeButton, copyButton, shareButton, webBottomNavigationView, wPopUpMenu;
+
+    LinearLayout history, exits, wallet, file, videoList, mp3List;
+    ImageView web_cancelPopup;
+    TextView webToolBar;
+    BottomSheetDialog bottomSheetDialog;
+
     EditText webViewUrlEditText;
     LinearLayout webViewSearchUrl;
     FloatingActionButton favDownload;
 
     ProgressDialog pDialog;
     ImageView imageIcon;
-    String  mURl;
-    String  mID;
+    String mURl;
+    String mID;
     String target_url;
     String youTubeLink;
     int bCount;
@@ -225,6 +234,7 @@ public class WebViewActivity extends AppCompatActivity{
         homeButton = findViewById(R.id.wHomeButton_id);
         copyButton = findViewById(R.id.wCopyUrl_id);
         shareButton = findViewById(R.id.wShareUrlButton_id);
+        wPopUpMenu = findViewById(R.id.wPopUpMenu_id);
         webBottomNavigationView = findViewById(R.id.webBottomNavigationView);
 
         progressBar = findViewById(R.id.progressBar_id);
@@ -241,7 +251,7 @@ public class WebViewActivity extends AppCompatActivity{
         pDialog = new ProgressDialog(this);
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
+        if (bundle != null) {
             target_url = bundle.getString("url");
         }
 
@@ -255,18 +265,17 @@ public class WebViewActivity extends AppCompatActivity{
         });
 
 
-
         verifyStoragePermissions(this);
         webViewSearchUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String url = webViewUrlEditText.getText().toString().trim();
-                if (url.isEmpty()){
+                if (url.isEmpty()) {
                     webViewUrlEditText.setError("Enter valid address");
-                }else {
+                } else {
                     String lastUrl = url;
                     Intent intent = new Intent(WebViewActivity.this, WebViewActivity.class);
-                    intent.putExtra("url",lastUrl);
+                    intent.putExtra("url", lastUrl);
                     startActivity(intent);
                 }
             }
@@ -281,6 +290,36 @@ public class WebViewActivity extends AppCompatActivity{
         webView.setClickable(true);
 
 
+        webView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+
+                final WebView webview = (WebView) view;
+                final WebView.HitTestResult result = webview.getHitTestResult();
+
+                if (result.getType() == SRC_ANCHOR_TYPE) {
+                    Toast.makeText(WebViewActivity.this, "SRC_ANCHOR_TYPE  "+result.getExtra(), Toast.LENGTH_SHORT).show();
+
+                    return true;
+                }
+
+                if (result.getType() == SRC_IMAGE_ANCHOR_TYPE) {
+
+                    Toast.makeText(WebViewActivity.this, "SRC_IMAGE_ANCHOR_TYPE "+result.getExtra(), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                if (result.getType() == IMAGE_TYPE) {
+
+                    Toast.makeText(WebViewActivity.this, "IMAGE_TYPE "+result.getExtra(), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+
+                return false;
+            }
+        });
         webView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
@@ -304,18 +343,48 @@ public class WebViewActivity extends AppCompatActivity{
             }
         });
 
+        wPopUpMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                bottomSheetDialog = new BottomSheetDialog(WebViewActivity.this,
+                        R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(WebViewActivity.this).inflate(R.layout.web_menu_popup,
+                        (LinearLayout) findViewById(R.id.categoryPopUp_id));
+
+
+                history = bottomSheetView.findViewById(R.id.web_History_id);
+                exits = bottomSheetView.findViewById(R.id.web_Exits_id);
+                wallet = bottomSheetView.findViewById(R.id.web_Wallet_id);
+                file = bottomSheetView.findViewById(R.id.web_download_id);
+                videoList = bottomSheetView.findViewById(R.id.web_Video_id);
+                mp3List = bottomSheetView.findViewById(R.id.web_Mp3Song_id);
+                web_cancelPopup = bottomSheetView.findViewById(R.id.web_cancelPopup);
+                webToolBar = bottomSheetView.findViewById(R.id.webToolBar_id);
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user!=null){
+                    webToolBar.setText(user.getDisplayName());
+                }
+                bottomSheetDialog.setContentView(bottomSheetView);
+                bottomSheetDialog.show();
+
+
+            }
+        });
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (webView.canGoBack()){
+                if (webView.canGoBack()) {
                     webView.goBack();
-                }else {
-                    if (bCount>1){
-                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                } else {
+                    if (bCount > 0) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
-                    }else {
-                        bCount= bCount+1;
+                    } else {
+                        bCount = bCount + 1;
                     }
 
                 }
@@ -326,7 +395,7 @@ public class WebViewActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                if (webView.canGoForward()){
+                if (webView.canGoForward()) {
                     webView.goForward();
                 }
 
@@ -337,7 +406,7 @@ public class WebViewActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
 
             }
@@ -346,14 +415,14 @@ public class WebViewActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                if (shareUrl!= null){
+                if (shareUrl != null) {
 
-                ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Link", shareUrl);
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(WebViewActivity.this, "Copied!", Toast.LENGTH_SHORT).show();
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Link", shareUrl);
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(WebViewActivity.this, "Copied!", Toast.LENGTH_SHORT).show();
 
-                }else {
+                } else {
 
                     Toast.makeText(WebViewActivity.this, "Text Empty", Toast.LENGTH_SHORT).show();
                 }
@@ -364,40 +433,41 @@ public class WebViewActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            String shareBody = "Site link: "+shareUrl;
-            String shareSub = "Important Link";
-            intent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
-            intent.putExtra(Intent.EXTRA_TEXT,shareBody);
-            startActivity(Intent.createChooser(intent,shareTitle));
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                String shareBody = "Site link: " + shareUrl;
+                String shareSub = "Important Link";
+                intent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+                intent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(intent, shareTitle));
 
             }
         });
-
-
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            public void onPageStarted(WebView view, final String url, Bitmap favicon) {
                 progressBar.setVisibility(View.GONE);
-
                 webViewUrlEditText.setText(url);
-                imageIcon.setImageBitmap(favicon);
+                Glide.with(WebViewActivity.this).asBitmap().load(favicon).placeholder(R.drawable.world).into(imageIcon);
+                shareUrl = url;
+                shareTitle = view.getTitle();
 
-                 shareUrl = url;
-                 shareTitle = view.getTitle();
-
-                if (haveNetwork()){
+                if (haveNetwork()) {
                     String logo = String.valueOf(favicon);
-                    linkClass = new LinkClass(view.getTitle(),url, logo);
-                    boolean insert =  db_manager.Save_All_Data(linkClass);
-                    if (insert){
-                        Toast.makeText(WebViewActivity.this, "insert success", Toast.LENGTH_SHORT).show();
-                    }else {
-                        Toast.makeText(WebViewActivity.this, "insert field", Toast.LENGTH_SHORT).show();
+                    linkClass = new LinkClass(view.getTitle(), url, logo);
+                    boolean insert = db_manager.Save_All_Data(linkClass);
+                    if (insert) {
+                        String check = db_manager.getData(url);
+                        if (check == null) {
+
+                            //Toast.makeText(WebViewActivity.this, "" + check, Toast.LENGTH_SHORT).show();
+                            SuggestionClass suggestionClass = new SuggestionClass(WebViewActivity.this);
+                            suggestionClass.insertSuggestion(url);
+
+                        }
                     }
-                    if (url.contains("youtube")){
+                    if (url.contains("youtube")) {
 
                         webBottomNavigationView.setVisibility(View.GONE);
 
@@ -406,20 +476,20 @@ public class WebViewActivity extends AppCompatActivity{
                                 @Override
                                 public void onUrisAvailable(String videoId, String videoTitle, SparseArray<YtFile> ytFiles) {
 
-                                    try{
+                                    try {
 
                                         if (ytFiles != null) {
                                             int tag = 22;
                                             youTubeLink = ytFiles.get(tag).getUrl();
-                                            if (youTubeLink != null){
+                                            if (youTubeLink != null) {
                                                 favDownload.setVisibility(View.VISIBLE);
                                             }
 
-                                        }else {
+                                        } else {
 
                                         }
 
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
 
                                     }
                                 }
@@ -427,12 +497,12 @@ public class WebViewActivity extends AppCompatActivity{
 
                             uriExtractor.execute(url);
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
                     }
 
-                }else {
+                } else {
 
                     Toast.makeText(WebViewActivity.this, "Please connect your net", Toast.LENGTH_SHORT).show();
                 }
@@ -442,16 +512,14 @@ public class WebViewActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onPageFinished(WebView view, String url)
-            {
+            public void onPageFinished(WebView view, String url) {
 
                 WebViewActivity.this.webView.loadUrl("javascript:(function() { var el = document.querySelectorAll('div[data-sigil]');for(var i=0;i<el.length; i++){var sigil = el[i].dataset.sigil;if(sigil.indexOf('inlineVideo') > -1){delete el[i].dataset.sigil;var jsonData = JSON.parse(el[i].dataset.store);el[i].setAttribute('onClick', 'FBDownloader.processVideo(\"'+jsonData['src']+'\");');}}})()");
                 super.onPageFinished(view, url);
             }
 
             @Override
-            public void onLoadResource(WebView view, String url)
-            {
+            public void onLoadResource(WebView view, String url) {
                 WebViewActivity.this.webView.loadUrl("javascript:(function prepareVideo() { var el = document.querySelectorAll('div[data-sigil]');for(var i=0;i<el.length; i++){var sigil = el[i].dataset.sigil;if(sigil.indexOf('inlineVideo') > -1){delete el[i].dataset.sigil;console.log(i);var jsonData = JSON.parse(el[i].dataset.store);el[i].setAttribute('onClick', 'FBDownloader.processVideo(\"'+jsonData['src']+'\",\"'+jsonData['videoID']+'\");');}}})()");
                 WebViewActivity.this.webView.loadUrl("javascript:( window.onload=prepareVideo;)()");
             }
@@ -545,24 +613,89 @@ public class WebViewActivity extends AppCompatActivity{
 
         });
 
+       // registerForContextMenu(webView);
+
     }
 
     ////   onCreate    end  =============
 
 
+  /*  @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        // Get the web view hit test result
+        final WebView.HitTestResult result = webView.getHitTestResult();
+
+        // If user long press on url
+        if (result.getType() == WebView.HitTestResult.ANCHOR_TYPE ||
+                result.getType() == SRC_ANCHOR_TYPE) {
+
+            // Set the title for context menu
+            menu.setHeaderTitle("Hello");
+            Toast.makeText(this, ""+result.getExtra()+"This "+result.getType(), Toast.LENGTH_SHORT).show();
+           *//* // Add an item to the menu
+            menu.add(0, 1, 0, "Show URL");
+            menu.add(0, 1, 0, "Show URL")
+                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            String Pressed_url = result.getExtra();
+                            Toast.makeText(WebViewActivity.this, "URL is:-" + Pressed_url,
+                                    Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    });*//*
+        }
+    }
+*/
+
+    public void webPopUp(View view) {
+
+        int id = view.getId();
+
+        if (id == R.id.web_cancelPopup) {
+            bottomSheetDialog.dismiss();
+        }else if (id == R.id.web_Exits_id) {
+            finishAffinity();
+
+        } else if (id == R.id.web_Video_id) {
+
+            startActivity(new Intent(getApplicationContext(), VideoShowActivity.class));
+            finish();
+
+        } else if (id == R.id.web_Mp3Song_id) {
+
+            startActivity(new Intent(getApplicationContext(), MP3_PlayActivity.class));
+            finish();
+
+        } else if (id == R.id.web_History_id) {
+            Toast.makeText(this, "web_History_id", Toast.LENGTH_SHORT).show();
+
+        } else if (id == R.id.web_Wallet_id) {
+            startActivity(new Intent(getApplicationContext(), WalletActivity.class));
+            finish();
+
+        } else if (id == R.id.web_download_id) {
+            Toast.makeText(this, "web_download_id", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
     @Override
     public void onBackPressed() {
 
-        if (webView.canGoBack()){
+        if (webView.canGoBack()) {
             webView.goBack();
 
-        }else {
-            if (bCount>1){
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        } else {
+            if (bCount > 0) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
 
-            }else {
-                bCount= bCount+1;
+            } else {
+                bCount = bCount + 1;
             }
 
         }
@@ -570,28 +703,22 @@ public class WebViewActivity extends AppCompatActivity{
     }
 
 
-
     private boolean haveNetwork() {
         boolean have_WiFi = false;
         boolean have_Mobile = false;
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo[] networkInfo = connectivityManager.getAllNetworkInfo();
 
-        for (NetworkInfo info : networkInfo){
+        for (NetworkInfo info : networkInfo) {
 
-            if (info.getTypeName().equalsIgnoreCase("WIFI"))
-            {
-                if (info.isConnected())
-                {
+            if (info.getTypeName().equalsIgnoreCase("WIFI")) {
+                if (info.isConnected()) {
                     have_WiFi = true;
                 }
             }
-            if (info.getTypeName().equalsIgnoreCase("MOBILE"))
-
-            {
-                if (info.isConnected())
-                {
+            if (info.getTypeName().equalsIgnoreCase("MOBILE")) {
+                if (info.isConnected()) {
                     have_Mobile = true;
                 }
             }
@@ -602,12 +729,12 @@ public class WebViewActivity extends AppCompatActivity{
     }
 
 
-    public String BitMapToString(Bitmap bitmap){
+    public String BitMapToString(Bitmap bitmap) {
 
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
     }
 
@@ -629,7 +756,7 @@ public class WebViewActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                downloadVideo(url,id);
+                downloadVideo(url, id);
 
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -648,9 +775,9 @@ public class WebViewActivity extends AppCompatActivity{
 
     private void videoPlay(String url) {
 
-      Intent intent = new Intent(WebViewActivity.this,VideoPlayActivity.class);
-      intent.putExtra("video_url",url);
-      startActivity(intent);
+        Intent intent = new Intent(WebViewActivity.this, VideoPlayActivity.class);
+        intent.putExtra("video_url", url);
+        startActivity(intent);
     }
 
 
@@ -686,14 +813,12 @@ public class WebViewActivity extends AppCompatActivity{
     private void downloadVideo(String url, String id) {
 
 
-        try
-        {
+        try {
             String mBaseFolderPath = android.os.Environment
                     .getExternalStorageDirectory()
                     + File.separator
                     + "FacebookVideos" + File.separator;
-            if (!new File(mBaseFolderPath).exists())
-            {
+            if (!new File(mBaseFolderPath).exists()) {
                 new File(mBaseFolderPath).mkdir();
             }
             String mFilePath = "file://" + mBaseFolderPath + "/" + id + ".mp4";
@@ -705,9 +830,7 @@ public class WebViewActivity extends AppCompatActivity{
             DownloadManager dm = (DownloadManager) getSystemService(getApplicationContext().DOWNLOAD_SERVICE);
             dm.enqueue(req);
             Toast.makeText(WebViewActivity.this, "Download Started", Toast.LENGTH_LONG).show();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Toast.makeText(WebViewActivity.this, "Download Failed: " + e.toString(), Toast.LENGTH_LONG).show();
         }
 
@@ -715,13 +838,12 @@ public class WebViewActivity extends AppCompatActivity{
 
 
     @JavascriptInterface
-    public void processVideo(final String vidData, final String vidID)
-    {
+    public void processVideo(final String vidData, final String vidID) {
 
         mURl = vidData;
         mID = vidID;
 
-        alertUser(mURl,mID);
+        alertUser(mURl, mID);
 
     }
 
@@ -744,8 +866,8 @@ public class WebViewActivity extends AppCompatActivity{
 
         favDownload.setVisibility(View.GONE);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        Toast.makeText(WebViewActivity.this, ""+url, Toast.LENGTH_SHORT).show();
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"hello"+".mp4");
+        Toast.makeText(WebViewActivity.this, "" + url, Toast.LENGTH_SHORT).show();
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "hello" + ".mp4");
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         request.allowScanningByMediaScanner();
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);

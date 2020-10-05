@@ -2,6 +2,7 @@ package com.world_tech_point.lambebrowser.mp3Folder;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -30,23 +32,38 @@ import java.util.List;
 
 public class MP3_PlayActivity extends AppCompatActivity {
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private List<SongInfo> _songs;
     RecyclerView recyclerView;
     SeekBar seekBar;
     SongAdapter songAdapter;
     MediaPlayer mediaPlayer;
     private Handler myHandler = new Handler();
+    int playControl=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_m_p3__play);
 
+        Toolbar toolbar = findViewById(R.id.mp3ListToolBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Audio list");
+
         _songs = new ArrayList<>();
-
-
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar.setVisibility(View.INVISIBLE);
         songAdapter = new SongAdapter(this,_songs);
         recyclerView.setAdapter(songAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -56,13 +73,17 @@ public class MP3_PlayActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(dividerItemDecoration);
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(final Button b, View view, final SongInfo obj, int position) {
-                if(b.getText().equals("Stop")){
+            public void onItemClick(final Button b, View view, final SongInfo obj, final int position) {
+                if(playControl==1){
                     mediaPlayer.stop();
                     mediaPlayer.reset();
                     mediaPlayer.release();
                     mediaPlayer = null;
-                    b.setText("Play");
+                    b.setBackgroundResource(R.drawable.play);
+                    seekBar.setVisibility(View.INVISIBLE);
+                    playControl=0;
+
+
                 }else {
 
                     Runnable runnable = new Runnable() {
@@ -81,8 +102,17 @@ public class MP3_PlayActivity extends AppCompatActivity {
                                         Log.d("Prog", "run: " + mediaPlayer.getDuration());
                                     }
                                 });
-                                b.setText("Stop");
 
+                                if (mediaPlayer.isPlaying()){
+
+                                    mediaPlayer.stop();
+                                    mediaPlayer.reset();
+                                    mediaPlayer.release();
+                                    mediaPlayer = null;
+                                }
+                                playControl=playControl+1;
+                                b.setBackgroundResource(R.drawable.pause);
+                                seekBar.setVisibility(View.VISIBLE);
 
 
                             }catch (Exception e){}

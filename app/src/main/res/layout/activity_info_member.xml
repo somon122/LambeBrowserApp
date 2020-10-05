@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".serviceFragment.ChooseMemberActivity">
+    tools:context=".serviceFragment.SubmitMemberInfoActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/submitToolBar"
@@ -46,7 +46,7 @@
                     android:id="@+id/submitUserName"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:hint="Full name"
+                    android:hint="User name"
                     android:inputType="textPersonName"
                     android:padding="5dp" />
 

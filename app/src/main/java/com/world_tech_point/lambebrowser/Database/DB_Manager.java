@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.world_tech_point.lambebrowser.addSpeedDaile.Speed_DB_Helper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +15,10 @@ public class DB_Manager {
 
     DB_helper dbHelper;
     SQLiteDatabase db;
-
+    String links;
 
     public DB_Manager(Context context) {
         dbHelper = new DB_helper(context);
-
     }
 
     public Boolean Save_All_Data(LinkClass linkClass) {
@@ -41,7 +42,6 @@ public class DB_Manager {
 
         ArrayList<LinkClass>dataList = new ArrayList<>();
         db = dbHelper.getReadableDatabase();
-
         String Query = "Select * from " + DB_helper.VISITED_TABLE;
         Cursor cursor = db.rawQuery(Query, null);
         if (cursor.moveToFirst()) {
@@ -54,11 +54,22 @@ public class DB_Manager {
             } while (cursor.moveToNext());
             db.close();
         }
-
         return dataList;
-
     }
 
+    public String getData(String link) {
+
+        db = dbHelper.getReadableDatabase();
+        String Query = "Select * from " + DB_helper.VISITED_TABLE + " where " + DB_helper.KEY_LINK + " = ?";
+        Cursor cursor = db.rawQuery(Query, new String[]{link});
+        if (cursor.moveToFirst()) {
+            do {
+                links = cursor.getString(cursor.getColumnIndex(DB_helper.KEY_LINK));
+            } while (cursor.moveToNext());
+            db.close();
+        }
+        return links;
+    }
     public boolean removeAll()
     {
         // db.delete(String tableName, String whereClause, String[] whereArgs);

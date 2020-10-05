@@ -16,6 +16,7 @@ public class Speed_DB {
 
     Speed_DB_Helper helper;
     SQLiteDatabase db;
+    String links;
 
 
     public Speed_DB(Context context) {
@@ -49,10 +50,11 @@ public class Speed_DB {
         Cursor cursor = db.rawQuery(Query, null);
         if (cursor.moveToFirst()) {
             do {
+                int id = cursor.getInt(cursor.getColumnIndex(Speed_DB_Helper.KEY_ID));
                 String title = cursor.getString(cursor.getColumnIndex(Speed_DB_Helper.KEY_TITLE));
                 String logo = cursor.getString(cursor.getColumnIndex(Speed_DB_Helper.KEY_LOGO));
                 String link = cursor.getString(cursor.getColumnIndex(Speed_DB_Helper.KEY_LINK));
-                SpeedDialClass speedDialClass = new SpeedDialClass(title,logo,link);
+                SpeedDialClass speedDialClass = new SpeedDialClass(id,title,logo,link);
                 dataList.add(speedDialClass);
             } while (cursor.moveToNext());
             db.close();
@@ -60,6 +62,35 @@ public class Speed_DB {
 
         return dataList;
 
+    }
+
+    public String getData(String link) {
+
+        db = helper.getReadableDatabase();
+        String Query = "Select * from " + Speed_DB_Helper.VISITED_TABLE + " where " + Speed_DB_Helper.KEY_LINK + " = ?";
+        Cursor cursor = db.rawQuery(Query, new String[]{link});
+        if (cursor.moveToFirst()) {
+            do {
+                links = cursor.getString(cursor.getColumnIndex(Speed_DB_Helper.KEY_LINK));
+            } while (cursor.moveToNext());
+            db.close();
+        }
+        return links;
+    }
+
+
+    public boolean Delete_Speed_Data (int rowId) {
+
+        db = helper.getWritableDatabase();
+        int isDeleted = db.delete(Speed_DB_Helper.VISITED_TABLE,Speed_DB_Helper.KEY_ID+" = ?",new String[]{Integer.toString(rowId)});
+
+        db.close();
+        if (isDeleted > 0)
+        {
+            return true;
+        }else {
+            return  false;
+        }
     }
 
     public boolean removeAll()

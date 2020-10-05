@@ -1,6 +1,7 @@
 package com.world_tech_point.lambebrowser.addSpeedDaile;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
+import com.world_tech_point.lambebrowser.MainActivity;
 import com.world_tech_point.lambebrowser.R;
 import com.world_tech_point.lambebrowser.WebViewActivity;
 
@@ -25,6 +28,7 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.View
     private Context context;
     private List<SpeedDialClass>speedDialClassList;
     private SpeedDialClass speedDialClass;
+    private Speed_DB speed_db;
 
     public SpeedDialAdapter(Context context, List<SpeedDialClass> speedDialClassList) {
         this.context = context;
@@ -36,6 +40,7 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.View
     public SpeedDialAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.show_speed_dial,parent,false);
 
+        speed_db = new Speed_DB(context);
         return new SpeedDialAdapter.ViewHolder(view);
     }
 
@@ -75,7 +80,51 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.View
             }
         });
 
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                speedDialClass = speedDialClassList.get(position);
+               alreadyAlert(speedDialClass.getId());
+                return false;
+            }
+        });
+    }
 
+    private void alreadyAlert(final int id) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Delete Alert!")
+                .setMessage("Are you sure to delete?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        speed_db.Delete_Speed_Data(id);
+                        context.startActivity(new Intent(context, MainActivity.class));
+
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override

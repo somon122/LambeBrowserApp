@@ -48,6 +48,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.codesgood:justifiedtextview:1.1.0'
 
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    implementation 'com.github.michael-rapp:chrome-like-tab-switcher:0.4.6'
+
 }
 repositories {
     mavenCentral()
