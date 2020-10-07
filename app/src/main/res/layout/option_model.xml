@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="30dp"
+    android:padding="5dp"
+    app:cardCornerRadius="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <Button
+            android:id="@+id/newTab_Model"
+            android:text="Open in new tab"
+            android:onClick="showOption"
+            android:background="@color/white"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
+
+        <Button
+            android:id="@+id/copyLink_model"
+            android:text="Copy link address"
+            android:onClick="showOption"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
+
+        <Button
+            android:id="@+id/download_model"
+            android:text="Download link"
+            android:onClick="showOption"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
+
+
+        <Button
+            android:id="@+id/share_model"
+            android:text="Share link"
+            android:background="@color/white"
+            android:textAllCaps="false"
+            android:onClick="showOption"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
+
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -9,4 +9,7 @@
     <color name="green">#04934D</color>
     <color name="PaleTurquoise">#AFEEEE</color>
     <color name="Turquoise">#40E0D0</color>
+
+    <color name="snackbar_action_text_color">#FF00BCD4</color>
+    <color name="window_background">@color/phone_tab_switcher_background_color</color>
 </resources>

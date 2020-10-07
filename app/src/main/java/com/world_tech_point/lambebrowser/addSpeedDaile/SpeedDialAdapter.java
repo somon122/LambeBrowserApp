@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import com.world_tech_point.lambebrowser.MainActivity;
 import com.world_tech_point.lambebrowser.R;
 import com.world_tech_point.lambebrowser.WebViewActivity;
+import com.world_tech_point.lambebrowser.categoryControl.CategoryController;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.View
     private List<SpeedDialClass>speedDialClassList;
     private SpeedDialClass speedDialClass;
     private Speed_DB speed_db;
+    private CategoryController categoryController;
 
     public SpeedDialAdapter(Context context, List<SpeedDialClass> speedDialClassList) {
         this.context = context;
@@ -41,6 +43,7 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.View
         View view = LayoutInflater.from(context).inflate(R.layout.show_speed_dial,parent,false);
 
         speed_db = new Speed_DB(context);
+        categoryController = new CategoryController(context);
         return new SpeedDialAdapter.ViewHolder(view);
     }
 
@@ -101,6 +104,7 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.View
                     public void onClick(DialogInterface dialog, int which) {
 
                         speed_db.Delete_Speed_Data(id);
+                        categoryController.delete();
                         context.startActivity(new Intent(context, MainActivity.class));
 
                     }

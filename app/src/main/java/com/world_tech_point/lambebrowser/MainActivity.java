@@ -1,6 +1,7 @@
 package com.world_tech_point.lambebrowser;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         HomeFragment homeFragment = new HomeFragment();
         fragmentSet(homeFragment);
+
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         pupUpButton = findViewById(R.id.pupUpButton);
@@ -181,7 +184,4 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
-
-
-
 }

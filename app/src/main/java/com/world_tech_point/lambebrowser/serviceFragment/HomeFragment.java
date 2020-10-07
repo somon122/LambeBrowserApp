@@ -1,6 +1,7 @@
 package com.world_tech_point.lambebrowser.serviceFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -243,14 +245,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-
-
-
         return root;
     }
-
-
 
     private void fragmentSet(Fragment fragment){
 
