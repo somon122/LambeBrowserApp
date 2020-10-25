@@ -23,6 +23,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
 import com.squareup.picasso.Picasso;
 import com.world_tech_point.lambebrowser.R;
 import com.world_tech_point.lambebrowser.ReadBlogActivity;
@@ -45,6 +49,13 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
     private BlogShowClass blogShowClass;
     private ViewCountClass viewCountClass;
     private  String viewSize = "0";
+    private InterstitialAd mInterstitialAd;
+
+    private int id;
+    private String category;
+    private String title;
+    private String image;
+    private String site_url;
 
 
     public BlogShowAdapter(Context context, List<BlogShowClass> showClassList) {
@@ -58,7 +69,54 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
        View view = LayoutInflater.from(context).inflate(R.layout.show_blog,parent,false);
 
        viewCountClass= new ViewCountClass(context);
+        mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdUnitId(context.getString(R.string.mInterstitialAdsId));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+            }
+
+            @Override
+            public void onAdImpression() {
+                goForDetails();
+            }
+
+            @Override
+            public void onAdClosed() {
+                goForDetails();
+
+            }
+        });
+
+
        return new BlogShowAdapter.ViewHolder(view);
+    }
+
+    private void goForDetails() {
+
+        if (category.equals("Movie") || category.equals("Video")){
+
+            if (site_url.contains(".mp4") || site_url.contains(".3gp")){
+                Intent intent = new Intent(context, VideoPlayActivity.class);
+                intent.putExtra("video_url",site_url);
+                context.startActivity(intent);
+            }else {
+                Intent intent = new Intent(context, YoutubeVideoPlayerActivity.class);
+                intent.putExtra("id",site_url);
+                context.startActivity(intent);
+            }
+        }else {
+
+            String img = context.getString(R.string.BASS_URL_FOR_IMAGE)+"public/files/image_file/"+ image;
+            Intent intent = new Intent(context, ReadBlogActivity.class);
+            intent.putExtra("title",title);
+            intent.putExtra("image",img);
+            intent.putExtra("category",category);
+            intent.putExtra("description",site_url);
+            context.startActivity(intent);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -82,37 +140,55 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
         holder.seeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                blogShowClass = showClassList.get(position);
-                String vc = holder.likeCount.getText().toString();
-                int v = Integer.parseInt(vc)+1;
-                viewCountClass.insertBlogView(String.valueOf(v),String.valueOf(position),blogShowClass.getCategory(),blogShowClass.getTitle());
 
-                if (blogShowClass.getCategory().equals("Movie") || blogShowClass.getCategory().equals("Video")){
+
+                if (mInterstitialAd.isLoaded()){
 
                     blogShowClass = showClassList.get(position);
-                    String url = blogShowClass.getSite_url();
-                    if (url.contains(".mp4") || url.contains(".3gp")){
+                    id = blogShowClass.getId();
+                    image = blogShowClass.getImage();
+                    site_url = blogShowClass.getSite_url();
+                    title = blogShowClass.getTitle();
+                    category = blogShowClass.getCategory();
+                    String vc = holder.likeCount.getText().toString();
+                    int v = Integer.parseInt(vc)+1;
+                    viewCountClass.insertBlogView(String.valueOf(v),String.valueOf(position),blogShowClass.getCategory(),blogShowClass.getTitle());
+                    mInterstitialAd.show();
 
-                        Intent intent = new Intent(context, VideoPlayActivity.class);
-                        intent.putExtra("video_url",url);
-                        context.startActivity(intent);
+                }else {
 
-                    }else {
-                        Intent intent = new Intent(context, YoutubeVideoPlayerActivity.class);
-                        intent.putExtra("id",url);
+                    blogShowClass = showClassList.get(position);
+                    String vc = holder.likeCount.getText().toString();
+                    int v = Integer.parseInt(vc) + 1;
+                    viewCountClass.insertBlogView(String.valueOf(v), String.valueOf(position), blogShowClass.getCategory(), blogShowClass.getTitle());
+
+                    if (blogShowClass.getCategory().equals("Movie") || blogShowClass.getCategory().equals("Video")) {
+
+                        blogShowClass = showClassList.get(position);
+                        String url = blogShowClass.getSite_url();
+                        if (url.contains(".mp4") || url.contains(".3gp")) {
+
+                            Intent intent = new Intent(context, VideoPlayActivity.class);
+                            intent.putExtra("video_url", url);
+                            context.startActivity(intent);
+
+                        } else {
+                            Intent intent = new Intent(context, YoutubeVideoPlayerActivity.class);
+                            intent.putExtra("id", url);
+                            context.startActivity(intent);
+                        }
+                    } else {
+                        blogShowClass = showClassList.get(position);
+                        String img = context.getString(R.string.BASS_URL_FOR_IMAGE) + "public/files/image_file/" + blogShowClass.getImage();
+                        Intent intent = new Intent(context, ReadBlogActivity.class);
+                        intent.putExtra("title", blogShowClass.getTitle());
+                        intent.putExtra("image", img);
+                        intent.putExtra("category", blogShowClass.getCategory());
+                        intent.putExtra("description", blogShowClass.getSite_url());
                         context.startActivity(intent);
                     }
-                }else {
-                    blogShowClass = showClassList.get(position);
-                    String img = context.getString(R.string.BASS_URL_FOR_IMAGE)+"public/files/image_file/"+ blogShowClass.getImage();
-                    Intent intent = new Intent(context, ReadBlogActivity.class);
-                    intent.putExtra("title",blogShowClass.getTitle());
-                    intent.putExtra("image",img);
-                    intent.putExtra("category",blogShowClass.getCategory());
-                    intent.putExtra("description",blogShowClass.getSite_url());
-                    context.startActivity(intent);
-                }
 
+                }
 
             }
         });
@@ -129,36 +205,55 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
             @Override
             public void onClick(View view) {
 
-                blogShowClass = showClassList.get(position);
-                String vc = holder.likeCount.getText().toString();
-                int v = Integer.parseInt(vc)+1;
-                viewCountClass.insertBlogView(String.valueOf(v),String.valueOf(position),blogShowClass.getCategory(),blogShowClass.getTitle());
-
-                if (blogShowClass.getCategory().equals("Movie") || blogShowClass.getCategory().equals("Video")){
+                if (mInterstitialAd.isLoaded()){
 
                     blogShowClass = showClassList.get(position);
-                    String url = blogShowClass.getSite_url();
-                    if (url.contains(".mp4") || url.contains(".3gp")){
+                    id = blogShowClass.getId();
+                    image = blogShowClass.getImage();
+                    site_url = blogShowClass.getSite_url();
+                    title = blogShowClass.getTitle();
+                    category = blogShowClass.getCategory();
+                    String vc = holder.likeCount.getText().toString();
+                    int v = Integer.parseInt(vc)+1;
+                    viewCountClass.insertBlogView(String.valueOf(v),String.valueOf(position),blogShowClass.getCategory(),blogShowClass.getTitle());
+                    mInterstitialAd.show();
 
-                        Intent intent = new Intent(context, VideoPlayActivity.class);
-                        intent.putExtra("video_url",url);
-                        context.startActivity(intent);
+                }else {
 
-                    }else {
-                        Intent intent = new Intent(context, YoutubeVideoPlayerActivity.class);
-                        intent.putExtra("id",url);
+                    blogShowClass = showClassList.get(position);
+                    String vc = holder.likeCount.getText().toString();
+                    int v = Integer.parseInt(vc) + 1;
+                    viewCountClass.insertBlogView(String.valueOf(v), String.valueOf(position), blogShowClass.getCategory(), blogShowClass.getTitle());
+
+                    if (blogShowClass.getCategory().equals("Movie") || blogShowClass.getCategory().equals("Video")) {
+
+                        blogShowClass = showClassList.get(position);
+                        String url = blogShowClass.getSite_url();
+                        if (url.contains(".mp4") || url.contains(".3gp")) {
+
+                            Intent intent = new Intent(context, VideoPlayActivity.class);
+                            intent.putExtra("video_url", url);
+                            context.startActivity(intent);
+
+                        } else {
+                            Intent intent = new Intent(context, YoutubeVideoPlayerActivity.class);
+                            intent.putExtra("id", url);
+                            context.startActivity(intent);
+                        }
+                    } else {
+                        blogShowClass = showClassList.get(position);
+                        String img = context.getString(R.string.BASS_URL_FOR_IMAGE) + "public/files/image_file/" + blogShowClass.getImage();
+                        Intent intent = new Intent(context, ReadBlogActivity.class);
+                        intent.putExtra("title", blogShowClass.getTitle());
+                        intent.putExtra("image", img);
+                        intent.putExtra("category", blogShowClass.getCategory());
+                        intent.putExtra("description", blogShowClass.getSite_url());
                         context.startActivity(intent);
                     }
-                }else {
-                    blogShowClass = showClassList.get(position);
-                    String img = context.getString(R.string.BASS_URL_FOR_IMAGE)+"public/files/image_file/"+ blogShowClass.getImage();
-                    Intent intent = new Intent(context, ReadBlogActivity.class);
-                    intent.putExtra("title",blogShowClass.getTitle());
-                    intent.putExtra("image",img);
-                    intent.putExtra("category",blogShowClass.getCategory());
-                    intent.putExtra("description",blogShowClass.getSite_url());
-                    context.startActivity(intent);
+
                 }
+
+
             }
         });
 

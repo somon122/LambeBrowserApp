@@ -4,6 +4,10 @@
     <string name="BASS_URL">https://media.marychuks.club/api/</string>
     <string name="BASS_URL_FOR_IMAGE">https://media.marychuks.club/</string>
 
+    <string name="mAppId">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="mInterstitialAdsId">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="mBannerAdsId">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="mVideoAdsId">ca-app-pub-3940256099942544/5224354917</string>
 
 
     <string name="activity_settings">Settings</string>

@@ -20,6 +20,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.world_tech_point.lambebrowser.R;
 import com.world_tech_point.lambebrowser.addSpeedDaile.SpeedDialClass;
 import com.world_tech_point.lambebrowser.categoryControl.AddSpeedDialAdapter;

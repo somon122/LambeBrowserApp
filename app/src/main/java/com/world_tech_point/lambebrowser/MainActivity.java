@@ -102,10 +102,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.bottom_File_id:
 
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        ///startActivity(new Intent(getApplicationContext(),MainActivity.class));
 
-                     /*  FilesFragment filesFragment = new FilesFragment();
-                        fragmentSet(filesFragment);*/
+                       FilesFragment filesFragment = new FilesFragment();
+                        fragmentSet(filesFragment);
                         break;
                     default:
                         break;

@@ -24,6 +24,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.world_tech_point.lambebrowser.MainActivity;
 import com.world_tech_point.lambebrowser.R;
 
@@ -49,6 +51,8 @@ public class MP3_PlayActivity extends AppCompatActivity {
     private Handler myHandler = new Handler();
     int playControl=0;
 
+    AdView adView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,11 @@ public class MP3_PlayActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Audio list");
+
+        adView = findViewById(R.id.mp3BannerAds);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
 
         _songs = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);

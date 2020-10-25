@@ -1,35 +1,20 @@
 package com.world_tech_point.lambebrowser.serviceFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.material.tabs.TabLayout;
 import com.world_tech_point.lambebrowser.SuggestionClass;
 import com.world_tech_point.lambebrowser.categoryControl.AddCategoryActivity;
-import com.world_tech_point.lambebrowser.Database.DB_Manager;
-import com.world_tech_point.lambebrowser.Database.LinkClass;
 import com.world_tech_point.lambebrowser.R;
 import com.world_tech_point.lambebrowser.WebViewActivity;
 import com.world_tech_point.lambebrowser.addSpeedDaile.SpeedDialAdapter;
@@ -45,17 +30,9 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
 
-    LinearLayout google,facebook,youTube,g_mail,searchUrl, addSpeedDial, visitedLinearLayout;
+    LinearLayout google,facebook,youTube,searchUrl, addSpeedDial, visitedLinearLayout;
     AutoCompleteTextView autoCompleteTextView;
 
-    RecyclerView recyclerView;
-    List<LinkClass>visitedClassList;
-    DB_Manager db_manager;
-    ImageView deleteHistoryData;
-    ConstraintLayout constraintLayoutScroll;
-    TextView pupUpButton;
-    FrameLayout categoryHost;
-    int cHide;
 
     RecyclerView speedDialRecyclerView;
     List<SpeedDialClass>dialClassList;
@@ -79,18 +56,18 @@ public class HomeFragment extends Fragment {
         google = root.findViewById(R.id.google_id);
         facebook = root.findViewById(R.id.facebook_id);
         youTube = root.findViewById(R.id.youTube_id);
-        g_mail = root.findViewById(R.id.g_mail_id);
         searchUrl = root.findViewById(R.id.searchUrl_id);
         autoCompleteTextView = root.findViewById(R.id.urlEditText_id);
 
         visitedLinearLayout = root.findViewById(R.id.visitedLinearLayout);
         speedDialRecyclerView = root.findViewById(R.id.speedDialRecyclerView);
-        speedDialRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),5));
+        speedDialRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),4));
         speedDialRecyclerView.setHasFixedSize(true);
         dialClassList = new ArrayList<>();
 
         speed_db = new Speed_DB(getContext());
         dialClassList=speed_db.getLinkClassList();
+
 
         SpeedDialAdapter speedDialAdapter = new SpeedDialAdapter(getContext(),dialClassList);
         speedDialRecyclerView.setAdapter(speedDialAdapter);
@@ -236,15 +213,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-                 g_mail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                customSearch("https://mail.google.com/");
-
-            }
-        });
-
         return root;
     }
 

@@ -26,6 +26,7 @@ public class AddSpeedDialAdapter extends RecyclerView.Adapter<AddSpeedDialAdapte
     private List<SpeedDialClass> speedDialClassList;
     private SpeedDialClass speedDialClass;
     private Speed_DB speed_db;
+    CategoryController categoryController;
 
     public AddSpeedDialAdapter(Context context, List<SpeedDialClass> speedDialClassList) {
         this.context = context;
@@ -37,6 +38,7 @@ public class AddSpeedDialAdapter extends RecyclerView.Adapter<AddSpeedDialAdapte
     public AddSpeedDialAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.show_add_speed_dial, parent, false);
         speed_db = new Speed_DB(context);
+        categoryController=new CategoryController(context);
         return new AddSpeedDialAdapter.ViewHolder(view);
     }
 
@@ -77,6 +79,7 @@ public class AddSpeedDialAdapter extends RecyclerView.Adapter<AddSpeedDialAdapte
                         Boolean isInsert = speed_db.Save_All_Data(speedDialClass);
 
                         if (isInsert) {
+                            categoryController.delete();
                             Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                             context.startActivity(new Intent(context, MainActivity.class));
                         }

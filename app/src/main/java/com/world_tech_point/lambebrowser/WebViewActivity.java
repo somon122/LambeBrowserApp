@@ -30,9 +30,11 @@ import android.graphics.RectF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -56,8 +58,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -77,14 +79,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.world_tech_point.lambebrowser.Database.DB_Manager;
 import com.world_tech_point.lambebrowser.Database.LinkClass;
 import com.world_tech_point.lambebrowser.mp3Folder.MP3_PlayActivity;
+import com.world_tech_point.lambebrowser.serviceFragment.DownloadMsgShow;
 import com.world_tech_point.lambebrowser.videoShowFolder.VideoShowActivity;
 import com.world_tech_point.lambebrowser.wallet.WalletActivity;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import at.huber.youtubeExtractor.YouTubeUriExtractor;
@@ -297,17 +306,22 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
             final CardView cardView;
             final LinearLayout defaultFrame;
+            final List<String> sList;
 
             cardView = findViewById(R.id.searchViewItem);
             defaultFrame = findViewById(R.id.defaultFrame);
 
             progressBar = findViewById(R.id.progressBar_id);
-            swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
             webView = findViewById(R.id.webView_id);
             webViewSearchUrl = findViewById(R.id.webViewSearchUrl_id);
             webViewUrlEditText = findViewById(R.id.webViewUrlEditText_id);
             imageIcon = findViewById(R.id.imageIcon);
             imageIcon2 = findViewById(R.id.imageIcon2);
+
+            SuggestionClass suggestionClass = new SuggestionClass(context);
+            sList = suggestionClass.suggestionList();
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,sList);
+            webViewUrlEditText.setAdapter(arrayAdapter);
 
                 title.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -317,6 +331,16 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
                         defaultFrame.setVisibility(View.GONE);
                     }
                 });
+
+                webViewUrlEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View view, boolean b) {
+
+                        cardView.setVisibility(View.VISIBLE);
+                        defaultFrame.setVisibility(View.GONE);
+
+                    }
+                });
             webViewSearchUrl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -324,10 +348,24 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
                     if (url.isEmpty()) {
                         webViewUrlEditText.setError("Enter valid address");
                     } else {
-                        String lastUrl = url;
-                        Intent intent = new Intent(WebViewActivity.this, WebViewActivity.class);
-                        intent.putExtra("url", lastUrl);
-                        startActivity(intent);
+                        if (url.contains("https://www.")){
+
+                            webView.loadUrl(url);
+
+                        }else if (url.contains("www")){
+
+                            String lastUrl = "https://"+url;
+                            webView.loadUrl(lastUrl);
+
+
+                        }else if (url.contains("https")){
+
+                            webView.loadUrl(url);
+
+                        }else {
+                            String lastUrl = "https://www.google.com/search?q="+url;
+                            webView.loadUrl(lastUrl);
+                        }
                     }
                 }
             });
@@ -343,20 +381,47 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
                     if (result.getType() == SRC_ANCHOR_TYPE) {
 
-                        showOptionMethod(result.getExtra());
+                        if (result.getExtra().contains(".mp4")) {
 
+                            showOptionMethod(result.getExtra(), "mp4");
+                        } else if (result.getExtra().contains(".3gp")){
+
+                            showOptionMethod(result.getExtra(), "3gp");
+
+                        }else if (result.getExtra().contains(".WMV")){
+                            showOptionMethod(result.getExtra(), "WMV");
+
+                        }else if (result.getExtra().contains(".AVI")){
+                            showOptionMethod(result.getExtra(), "AVI");
+
+                        }else {
+                            showOptionMethod(result.getExtra(),"mp4");
+                        }
                         return true;
                     }
 
                     if (result.getType() == SRC_IMAGE_ANCHOR_TYPE) {
 
-                        showOptionMethod(result.getExtra());
+                        if (result.getExtra().contains(".png")) {
+
+                            showOptionMethod(result.getExtra(), "png");
+                        } else if (result.getExtra().contains(".JPG")){
+
+                            showOptionMethod(result.getExtra(), "jpg");
+                        }else if (result.getExtra().contains(".jpeg")){
+                            showOptionMethod(result.getExtra(), "jpeg");
+
+                        }else if (result.getExtra().contains(".webp")){
+                            showOptionMethod(result.getExtra(), "webp");
+
+                        }else {
+                            showOptionMethod(result.getExtra(),"jpg");
+                        }
                         return true;
                     }
 
                     if (result.getType() == IMAGE_TYPE) {
-
-                        showOptionMethod(result.getExtra());
+                        showOptionMethod(result.getExtra(),"jpg");
                         return true;
                     }
                     return false;
@@ -423,7 +488,7 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
                             }
                         }
-                        if (url.contains("youtube")) {
+                        if (url.contains("YouTube")) {
 
                             webBottomNavigationView.setVisibility(View.GONE);
 
@@ -617,13 +682,14 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
         }
 
-        private void showOptionMethod(String url) {
+        private void showOptionMethod(String url, String ext) {
 
             builder = new AlertDialog.Builder(WebViewActivity.this);
             View view1 = getLayoutInflater().inflate(R.layout.option_model, null);
             builder.setView(view1);
 
             newTabURL = url;
+            extension = ext;
 
             newTabModel = view1.findViewById(R.id.newTab_Model);
             copyLinkModel = view1.findViewById(R.id.copyLink_model);
@@ -1117,7 +1183,6 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
     String appname;
     WebView webView;
-    SwipeRefreshLayout swipeRefreshLayout;
     ProgressBar progressBar;
 
     LinearLayout backButton, forwardButton, homeButton, copyButton, shareButton, webBottomNavigationView, wPopUpMenu;
@@ -1126,7 +1191,7 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
     ImageView web_cancelPopup;
     TextView webToolBar;
     BottomSheetDialog bottomSheetDialog;
-    EditText webViewUrlEditText;
+    AutoCompleteTextView webViewUrlEditText;
     LinearLayout webViewSearchUrl;
     FloatingActionButton favDownload;
     ProgressDialog pDialog;
@@ -1137,6 +1202,7 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
     String target_url;
     String newTabURL;
+    String extension;
     int loadURL;
 
     Button newTabModel, copyLinkModel, downloadModel, shareModel;
@@ -1245,8 +1311,7 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
                     webView.goBack();
                 } else {
                     if (bCount > 0) {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
+                       finish();
                     } else {
                         bCount = bCount + 1;
                     }
@@ -1429,7 +1494,7 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
             finish();
 
         } else if (id == R.id.web_History_id) {
-            Toast.makeText(this, "web_History_id", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
 
         } else if (id == R.id.web_Wallet_id) {
             startActivity(new Intent(getApplicationContext(), WalletActivity.class));
@@ -1517,7 +1582,8 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
             }
 
         } else if (id == R.id.download_model) {
-            Toast.makeText(WebViewActivity.this, "Coming Soon...", Toast.LENGTH_SHORT).show();
+
+          anyFileDownload(newTabURL,extension);
             dialog.dismiss();
 
         } else if (id == R.id.share_model) {
@@ -1533,16 +1599,6 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
         }
     }
-
-    public String BitMapToString(Bitmap bitmap) {
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
 
     private void alertUser(final String url, final String id) {
 
@@ -1589,7 +1645,6 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
     private void youtubeDownloadAlert(final String url) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(WebViewActivity.this);
-
         builder.setTitle("Alert");
         builder.setMessage("Are you sure Download?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -1640,10 +1695,6 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
         }
 
     }
-
-
-
-
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -1661,15 +1712,138 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
 
     private void youtubeDownload(String url) {
 
+        @SuppressLint
+        ("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
+        String dateTime = sdf.format(new Date());
+
         favDownload.setVisibility(View.GONE);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         Toast.makeText(WebViewActivity.this, "" + url, Toast.LENGTH_SHORT).show();
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "hello" + ".mp4");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, dateTime + ".mp4");
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         request.allowScanningByMediaScanner();
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         downloadManager.enqueue(request);
 
+
+    }
+
+
+    private void anyFileDownload(String url, String ext) {
+
+      /*  DownloadFileFromURL downloadMsgShow = new DownloadFileFromURL();
+        downloadMsgShow.execute(url,ext);*/
+
+    @SuppressLint
+        ("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss");
+        String dateTime = sdf.format(new Date());
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, dateTime + "."+ext);
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        request.allowScanningByMediaScanner();
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        downloadManager.enqueue(request);
+
+    }
+
+
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+        ProgressDialog pd;
+        String pathFolder = "";
+        String pathFile = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(WebViewActivity.this);
+            pd.setTitle("Processing...");
+            pd.setMessage("Please wait.");
+            pd.setMax(100);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setCancelable(true);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... f_url) {
+            int count;
+
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss");
+            String currentDateAndTime = sdf.format(new Date());
+
+            try {
+                pathFolder = Environment.getExternalStorageDirectory() + "/download_file";
+                pathFile = pathFolder + "/"+currentDateAndTime+f_url[1];
+                File futureStudioIconFile = new File(pathFolder);
+                if(!futureStudioIconFile.exists()){
+                    futureStudioIconFile.mkdirs();
+                }
+
+                URL url = new URL(f_url[0]);
+                URLConnection connection = url.openConnection();
+                connection.connect();
+
+                // this will be useful so that you can show a tipical 0-100%
+                // progress bar
+                int lengthOfFile = connection.getContentLength();
+                String lengthOfFile2 = connection.getContentType();
+
+                Toast.makeText(WebViewActivity.this, ""+lengthOfFile2, Toast.LENGTH_SHORT).show();
+
+                // download the file
+                InputStream input = new BufferedInputStream(url.openStream());
+                FileOutputStream output = new FileOutputStream(pathFile);
+
+                byte data[] = new byte[1024]; //anybody know what 1024 means ?
+                long total = 0;
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+
+                    // writing data to file
+                    output.write(data, 0, count);
+                }
+
+                // flushing output
+                output.flush();
+
+                // closing streams
+                output.close();
+                input.close();
+
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+
+            return pathFile;
+        }
+
+        protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
+            pd.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        @Override
+        protected void onPostExecute(String file_url) {
+            if (pd!=null) {
+                pd.dismiss();
+            }
+           /* StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+            Intent i = new Intent(Intent.ACTION_VIEW);
+
+            i.setDataAndType(Uri.fromFile(new File(file_url)), "application/vnd.android.package-archive" );
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            getApplicationContext().startActivity(i);*/
+        }
 
     }
 

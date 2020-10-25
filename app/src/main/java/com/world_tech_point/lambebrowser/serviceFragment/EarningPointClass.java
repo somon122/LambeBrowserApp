@@ -37,7 +37,7 @@ public class EarningPointClass {
                 try {
                     JSONObject obj = new JSONObject(response);
                     if (obj.getBoolean("success")) {
-                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+
                     } else {
 
                     }

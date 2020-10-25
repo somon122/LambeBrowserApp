@@ -9,8 +9,9 @@
    >
 
     <LinearLayout
-        android:orientation="horizontal"
+
         android:id="@+id/defaultFrame"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +29,7 @@
                 android:id="@+id/imageIcon2"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/add" />
+                />
 
         </LinearLayout>
 
@@ -82,21 +83,22 @@
                     android:id="@+id/imageIcon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/add" />
+                    />
 
             </LinearLayout>
 
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/webViewUrlEditText_id"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="7"
                 android:background="@null"
-                android:clickable="true"
-                android:hint="URL"
+                android:completionThreshold="1"
+                android:hint="search or type web address"
                 android:padding="5dp"
                 android:singleLine="true"
+                android:textColor="@color/black"
                 android:textSize="12sp" />
 
             <LinearLayout
@@ -121,22 +123,14 @@
     </androidx.cardview.widget.CardView>
 
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <WebView
+        android:id="@+id/webView_id"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchViewItem">
-
-
-        <WebView
-            android:id="@+id/webView_id"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        app:layout_constraintTop_toBottomOf="@+id/searchViewItem" />
 
 
     <ProgressBar

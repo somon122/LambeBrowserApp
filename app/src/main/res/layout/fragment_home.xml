@@ -129,10 +129,10 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="76dp"
                     android:orientation="horizontal"
                     android:paddingTop="5dp"
-                    android:weightSum="5">
+                    android:weightSum="4">
 
                     <LinearLayout
                         android:id="@+id/addSpeedDial"
@@ -143,37 +143,14 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:src="@drawable/add_dial" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Add"
-                            android:textColor="@color/black"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/g_mail_id"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/gmail" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="g-mail"
                             android:textColor="@color/black"
                             android:textSize="10sp" />
 
@@ -188,8 +165,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:src="@drawable/youtube" />
 
                         <TextView
@@ -210,8 +187,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:src="@drawable/facebook" />
 
                         <TextView
@@ -232,8 +209,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:src="@drawable/google" />
 
                         <TextView
@@ -290,8 +267,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
