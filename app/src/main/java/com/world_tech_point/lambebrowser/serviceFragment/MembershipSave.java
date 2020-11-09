@@ -17,7 +17,7 @@ public class MembershipSave {
     }
 
 
-    public void saveUserInfo (int id,String userName, String email, String user_type, String number,
+    public void saveUserInfo (int id,String userName, String email, String user_type, String add_fee_status, String number,
                            String referCode,String bankName, String bankAccountNo, String facebookID, String instragramID){
 
         editor.putInt("id",id);
@@ -25,6 +25,7 @@ public class MembershipSave {
         editor.putString("email",email);
         editor.putString("userName",userName);
         editor.putString("user_type",user_type);
+        editor.putString("add_fee_status",add_fee_status);
         editor.putString("referCode",referCode);
         editor.putString("bankName",bankName);
         editor.putString("bankAccountNo",bankAccountNo);
@@ -88,6 +89,11 @@ public class MembershipSave {
 
         String user_type = sharedPreferences.getString("user_type","");
         return user_type;
+    }
+    public String getAdd_fee_status (){
+
+        String add_fee_status = sharedPreferences.getString("add_fee_status","");
+        return add_fee_status;
     }
     public String getReferCode (){
 

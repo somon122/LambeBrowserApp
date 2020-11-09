@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,69 +11,103 @@
         android:id="@+id/profileTooBar_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
         android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <TableRow
+        android:layout_marginBottom="20dp"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/profileEarnPoint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
+            android:paddingTop="3dp"
+            android:text="Earn point: 00"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profileReferPoint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
+            android:paddingTop="3dp"
+            android:text="Refer point: 00"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </TableRow>
+
     <TableRow>
 
         <TextView
-            android:text="User Name "
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
             android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
+            android:text="Name: "
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
 
 
         <TextView
             android:id="@+id/profileUserName"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="start"
             android:maxLines="2"
+            android:paddingTop="3dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="3dp"
             android:textColor="@color/black"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp" />
 
     </TableRow>
 
     <TableRow android:id="@+id/ghgdhf">
+
         <TextView
-            android:gravity="end"
-            android:text="Email Address: "
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
+            android:text="Email: "
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/profileEmail"
-            android:textSize="15sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:maxLines="2"
             android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp" />
 
 
     </TableRow>
 
 
-  <LinearLayout
-      android:id="@+id/linearLayout2"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
@@ -83,28 +116,29 @@
         app:layout_constraintTop_toBottomOf="@+id/ghgdhf">
 
         <TextView
-           android:gravity="end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
             android:text="Number: "
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/profileNumber"
-            android:textSize="15sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:maxLines="2"
             android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp" />
 
     </LinearLayout>
 
-  <LinearLayout
-      android:id="@+id/linearLayout3"
+    <LinearLayout
+        android:id="@+id/linearLayout22"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
@@ -113,28 +147,91 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
         <TextView
-           android:gravity="end"
-            android:text="Refer code: "
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
+            android:text="User type: "
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/profileReferCode"
-            android:textSize="15sp"
+            android:id="@+id/profileUserType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:maxLines="2"
             android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp" />
 
     </LinearLayout>
 
-  <LinearLayout
-      android:id="@+id/linearLayout4"
+    <LinearLayout
+        android:id="@+id/linearLayout222"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout22">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
+            android:text="Paid status: "
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profilePaidStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
+            android:text="Refer code: "
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profileReferCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
@@ -143,28 +240,29 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <TextView
-           android:gravity="end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
             android:text="Bank name: "
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/profileBankName"
-            android:textSize="15sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:maxLines="2"
             android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp" />
 
     </LinearLayout>
 
- <LinearLayout
-      android:id="@+id/linearLayout5"
+    <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
@@ -173,23 +271,24 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
         <TextView
-           android:gravity="end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:padding="5dp"
             android:text="Bank AC No: "
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/profileBankNo"
-            android:textSize="15sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:maxLines="2"
             android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp" />
 
     </LinearLayout>
 

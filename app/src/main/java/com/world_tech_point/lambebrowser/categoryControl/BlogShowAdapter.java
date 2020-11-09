@@ -33,6 +33,7 @@ import com.world_tech_point.lambebrowser.ReadBlogActivity;
 import com.world_tech_point.lambebrowser.VideoPlayActivity;
 import com.world_tech_point.lambebrowser.ViewCountClass;
 import com.world_tech_point.lambebrowser.YoutubeVideoPlayerActivity;
+import com.world_tech_point.lambebrowser.serviceFragment.MembershipSave;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHolder> {
 
     private Context context;
@@ -50,12 +53,16 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
     private ViewCountClass viewCountClass;
     private  String viewSize = "0";
     private InterstitialAd mInterstitialAd;
+    int mPos;
+    int shareAlert=0;
 
     private int id;
     private String category;
     private String title;
     private String image;
     private String site_url;
+
+    MembershipSave membershipSave;
 
 
     public BlogShowAdapter(Context context, List<BlogShowClass> showClassList) {
@@ -70,6 +77,7 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
 
        viewCountClass= new ViewCountClass(context);
         mInterstitialAd = new InterstitialAd(context);
+        membershipSave = new MembershipSave(context);
         mInterstitialAd.setAdUnitId(context.getString(R.string.mInterstitialAdsId));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
@@ -80,16 +88,48 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
 
             @Override
             public void onAdImpression() {
-                goForDetails();
+
             }
 
             @Override
             public void onAdClosed() {
-                goForDetails();
+
+                if (membershipSave.getUser_type().equals("Affiliate partnership")){
+                    if (membershipSave.getAdd_fee_status().equals("User_paid")){
+                        taskPointAdd(membershipSave.getReferCode(),"5");
+                    }else {
+                        taskPointAdd(membershipSave.getReferCode(),"1");
+                    }
+
+                    if (shareAlert==1){
+                        blogShowClass = showClassList.get(mPos);
+                        share(blogShowClass.getTitle(),blogShowClass.getSite_url(),blogShowClass.getImage());
+                        shareAlert=0;
+                    }else if (shareAlert==0){
+                        goForDetails();
+                    }
+                }else if (membershipSave.getUser_type().equals("Free membership")){
+                    taskPointAdd(membershipSave.getReferCode(),"1");
+                    if (shareAlert==1){
+                        blogShowClass = showClassList.get(mPos);
+                        share(blogShowClass.getTitle(),blogShowClass.getSite_url(),blogShowClass.getImage());
+                        shareAlert=0;
+                    }else if (shareAlert==0) {
+                        goForDetails();
+                    }
+                }else {
+                    if (shareAlert==1){
+                        blogShowClass = showClassList.get(mPos);
+                        share(blogShowClass.getTitle(),blogShowClass.getSite_url(),blogShowClass.getImage());
+                        shareAlert=0;
+
+                    }else if (shareAlert==0){
+                        goForDetails();
+                    }
+                }
 
             }
         });
-
 
        return new BlogShowAdapter.ViewHolder(view);
     }
@@ -119,6 +159,41 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
         }
     }
 
+    private void taskPointAdd(final String refer_code, final String new_point) {
+        String url = context.getString(R.string.BASS_URL)+ "add_tasks_point";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if (obj.getString("response").equals("point_added")) {
+                        if (shareAlert==1){
+                            goForDetails();
+                        }
+
+                    }else if (obj.getString("response").equals("point_not_added")){
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> Params = new HashMap<>();
+                Params.put("referCode", refer_code);
+                Params.put("new_point", new_point);
+                return Params;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(stringRequest);
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final BlogShowAdapter.ViewHolder holder, final int position) {
@@ -141,9 +216,7 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
             @Override
             public void onClick(View view) {
 
-
                 if (mInterstitialAd.isLoaded()){
-
                     blogShowClass = showClassList.get(position);
                     id = blogShowClass.getId();
                     image = blogShowClass.getImage();
@@ -196,8 +269,15 @@ public class BlogShowAdapter extends RecyclerView.Adapter<BlogShowAdapter.ViewHo
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                blogShowClass = showClassList.get(position);
-             share(blogShowClass.getTitle(),blogShowClass.getSite_url(),blogShowClass.getImage());
+                if (mInterstitialAd.isLoaded()){
+                    shareAlert=1;
+                    mPos = position;
+                  mInterstitialAd.show();
+                }else {
+                    blogShowClass = showClassList.get(position);
+                    share(blogShowClass.getTitle(),blogShowClass.getSite_url(),blogShowClass.getImage());
+                }
+
             }
         });
 

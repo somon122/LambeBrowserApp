@@ -13,8 +13,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.world_tech_point.lambebrowser.Database.DB_Manager;
 import com.world_tech_point.lambebrowser.Database.LinkClass;
 import com.world_tech_point.lambebrowser.serviceFragment.HomeFragment;
@@ -40,6 +43,8 @@ public class HistoryActivity extends AppCompatActivity {
     DB_Manager db_manager;
     ImageView deleteHistoryData;
 
+    AdView adView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +57,11 @@ public class HistoryActivity extends AppCompatActivity {
 
         setTitle("History");
 
+        adView = new AdView(this, getString(R.string.faceBookBannerId), AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.historyBanner_container);
+        adContainer.addView(adView);
+        adView.loadAd();
+
         deleteHistoryData = findViewById(R.id.deleteHistoryData_id);
         recyclerView =findViewById(R.id.mostVisitedRecyclerView_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -62,7 +72,6 @@ public class HistoryActivity extends AppCompatActivity {
         VisitedAdapter visitedAdapter = new VisitedAdapter(this,visitedClassList);
         recyclerView.setAdapter(visitedAdapter);
         visitedAdapter.notifyDataSetChanged();
-
         deleteHistoryData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

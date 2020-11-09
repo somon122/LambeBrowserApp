@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class SubmitMemberInfoActivity extends AppCompatActivity {
 
@@ -177,6 +178,17 @@ public class SubmitMemberInfoActivity extends AppCompatActivity {
 
     }
 
+    private String random_refer_code(){
+        char[] chars = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
+        StringBuilder stringBuilder = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i<8;i++){
+            char c = chars[random.nextInt(chars.length)];
+            stringBuilder.append(c);
+        }
+        return stringBuilder.toString();
+    }
+
     private void proSubmit() {
         String name = userName.getText().toString().trim();
         String emailAdd = email.getText().toString();
@@ -206,12 +218,11 @@ public class SubmitMemberInfoActivity extends AppCompatActivity {
         }else {
 
             int bonusP = point+500;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss");
             String dateTime = sdf.format(new Date());
 
             submitUserInfo(name,emailAdd,phone,user_type,bName,bNumber
                     ,fb,instraGram,String.valueOf(bonusP),refer,dateTime);
-
 
         }
     }
@@ -236,7 +247,7 @@ public class SubmitMemberInfoActivity extends AppCompatActivity {
 
             int bonusP = point+100;
             @SuppressLint
-            ("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+            ("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss");
             String dateTime = sdf.format(new Date());
 
            submitUserInfo(name,emailAdd,phone,user_type,"",""
@@ -290,6 +301,7 @@ public class SubmitMemberInfoActivity extends AppCompatActivity {
                     Params.put("instragramID", instragramID);
                     Params.put("referCode", referCode);
                     Params.put("referBonus", referBonus);
+                    Params.put("newReferCode", random_refer_code());
                     Params.put("date_time", date_time);
                     return Params;
                 }
@@ -456,6 +468,7 @@ public class SubmitMemberInfoActivity extends AppCompatActivity {
                             String emailAddress = dataobj.getString("emailAddress");
                             String number = dataobj.getString("number");
                             String user_type = dataobj.getString("user_type");
+                            String add_fee_status = dataobj.getString("add_fee_status");
                             String bankName = dataobj.getString("bankName");
                             String bankAccountNo = dataobj.getString("bankAccountNo");
                             String facebookID = dataobj.getString("facebookID");
@@ -469,7 +482,7 @@ public class SubmitMemberInfoActivity extends AppCompatActivity {
 
                             }else {
 
-                                membershipSave.saveUserInfo(Integer.parseInt(userId),userName,emailAddress,number,user_type,bankName,bankAccountNo,
+                                membershipSave.saveUserInfo(Integer.parseInt(userId),userName,emailAddress,number,user_type,add_fee_status,bankName,bankAccountNo,
                                         facebookID,instragramID,referCode);
                                 startActivity(new Intent(SubmitMemberInfoActivity.this, MainActivity.class));
                                 finish();
@@ -504,8 +517,6 @@ public class SubmitMemberInfoActivity extends AppCompatActivity {
         };
         RequestQueue queue = Volley.newRequestQueue(SubmitMemberInfoActivity.this);
         queue.add(stringRequest);
-
-
 
     }
 

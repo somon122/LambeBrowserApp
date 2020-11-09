@@ -50,20 +50,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/delete" />
-
-
         </LinearLayout>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mostVisitedRecyclerView_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp" />
-
-
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/historyBanner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 

@@ -23,11 +23,6 @@ public class DownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
 
-
-
-
-
-
       /*  asynckT = new AsynckT(this);
         progressBar = findViewById(R.id.downloadProgressBar);
         asynckT.execute(10);*/

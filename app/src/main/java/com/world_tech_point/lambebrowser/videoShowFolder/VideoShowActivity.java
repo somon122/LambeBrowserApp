@@ -12,7 +12,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.world_tech_point.lambebrowser.R;
 
 import java.util.ArrayList;
@@ -34,7 +37,7 @@ public class VideoShowActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     VideoAdapter videoAdapter;
     MediaPlayer mediaPlayer;
-
+    AdView adView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,10 @@ public class VideoShowActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Video list");
 
+        adView = new AdView(this, getString(R.string.faceBookBannerId), AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.videoBanner_container);
+        adContainer.addView(adView);
+        adView.loadAd();
 
         _videos = new ArrayList<>();
         recyclerView = findViewById(R.id.VideoRecyclerView);

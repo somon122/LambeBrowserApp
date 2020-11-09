@@ -1835,18 +1835,7 @@ public class WebViewActivity extends AppCompatActivity implements TabSwitcherLis
             if (pd!=null) {
                 pd.dismiss();
             }
-           /* StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-            StrictMode.setVmPolicy(builder.build());
-            Intent i = new Intent(Intent.ACTION_VIEW);
-
-            i.setDataAndType(Uri.fromFile(new File(file_url)), "application/vnd.android.package-archive" );
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            getApplicationContext().startActivity(i);*/
         }
-
     }
-
-
 }
 

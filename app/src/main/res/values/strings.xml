@@ -4,10 +4,14 @@
     <string name="BASS_URL">https://media.marychuks.club/api/</string>
     <string name="BASS_URL_FOR_IMAGE">https://media.marychuks.club/</string>
 
-    <string name="mAppId">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="mInterstitialAdsId">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="mBannerAdsId">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="mAppId">ca-app-pub-7813609263609378~4188681976</string>
+    <string name="mInterstitialAdsId">ca-app-pub-7813609263609378/3805538591</string>
+    <string name="mBannerAdsId">ca-app-pub-7813609263609378/4665865130</string>
     <string name="mVideoAdsId">ca-app-pub-3940256099942544/5224354917</string>
+
+
+    <string name="faceBookBannerId">78547564</string>
+    <string name="facebookInterstitialAdId">6565</string>
 
 
     <string name="activity_settings">Settings</string>
@@ -28,6 +32,8 @@
     <string name="theme_preference_title">Theme</string>
     <string name="theme_preference_summary">Allows to choose the theme, which should be used by the example app</string>
     <string name="theme_preference_default_value">0</string>
+    <string name="payAlertText">Your need above information When you pay to admin. If you will not pay, You could not earn more point.</string>
+
 
     <string-array name="theme_entries">
         <item>Light</item>

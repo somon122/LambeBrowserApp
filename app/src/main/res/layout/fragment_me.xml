@@ -378,20 +378,20 @@
                                 android:textSize="10sp" />
 
                         </LinearLayout>
-
-
-
-
                     </LinearLayout>
-
-
                 </LinearLayout>
-
-
-
-
-
             </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/meBanner_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView2" />
 
 
             <androidx.cardview.widget.CardView
@@ -404,7 +404,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView2">
+                app:layout_constraintTop_toBottomOf="@+id/meBanner_container">
 
 
                 <LinearLayout

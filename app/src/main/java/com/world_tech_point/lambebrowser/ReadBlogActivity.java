@@ -7,9 +7,13 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.codesgood.views.JustifiedTextView;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.ads.AudienceNetworkAds;
 import com.squareup.picasso.Picasso;
 import com.world_tech_point.lambebrowser.categoryControl.CategoryController;
 
@@ -27,6 +31,7 @@ public class ReadBlogActivity extends AppCompatActivity {
 
     JustifiedTextView desc, readBlogTitle;
     ImageView imageView;
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,11 @@ public class ReadBlogActivity extends AppCompatActivity {
         readBlogTitle = findViewById(R.id.readBlogTitle);
         desc = findViewById(R.id.readBlogDesc);
         imageView = findViewById(R.id.readBlogImage);
+
+        adView = new AdView(this, getString(R.string.faceBookBannerId), AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = findViewById(R.id.readBlogBanner_container);
+        adContainer.addView(adView);
+        adView.loadAd();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
